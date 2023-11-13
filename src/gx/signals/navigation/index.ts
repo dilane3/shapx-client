@@ -3,6 +3,7 @@ import {
   NavigationState,
   NavigationsElement,
   NavigationsElementType,
+  ShapeElement,
   ShapeElementType,
 } from "./types";
 
@@ -10,7 +11,7 @@ export const navigationSignal = createSignal<NavigationState>({
   name: "navigation",
   state: {
     currentItem: NavigationsElement.CURSOR,
-    currentShape: null,
+    currentShape: ShapeElement.RECTANGLE,
   },
   actions: {
     setCurrentItem: (

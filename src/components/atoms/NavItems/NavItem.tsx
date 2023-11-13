@@ -38,10 +38,6 @@ export default function NavItem({
   const { setCurrentItem, setCurrentShape } =
     useActions<NavigationActions>("navigation");
 
-  useEffect(() => {
-    console.log(isHovered);
-  }, [isHovered]);
-
   // Handlers
   const handleChangeItem = () => {
     setCurrentItem({ item: value });
