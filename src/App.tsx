@@ -29,6 +29,10 @@ function App() {
           <Circle ref={circleRef} x={200} y={100} radius={50} fill="green" draggable />
         </Layer>
       </Stage> */}
+
+      <section className="w-full h-full bg-white">
+
+      </section>
     </Layout>
   );
 }

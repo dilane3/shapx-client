@@ -28,7 +28,7 @@ export default function Navbar() {
 
   return (
     <header className="w-full h-12 bg-secondary flex justify-start items-center px-8 border-b-[1px] border-gray">
-      <span className="font-latoBlack">Shapx</span>
+      <span className="font-latoBlack text-[1.2em]">Shapx</span>
 
       <div className="ml-8 flex flex-row">
         <NavItem

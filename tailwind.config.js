@@ -7,6 +7,7 @@ module.exports = withMT({
     extend: {
       width: {
         all: "100vw",
+        main: "calc(100% - 480px)",
         "mini-block-lg": "calc(100%/4 - 1rem)",
         "mini-block-md": "calc(100%/3 - 1rem)",
         "mini-block-sm": "calc(100%/2 - 1rem)",
