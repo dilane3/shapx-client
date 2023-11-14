@@ -73,7 +73,7 @@ export const drawingSignal = createSignal<DrawingState>({
       return state;
     },
 
-    selectShape: (state, shapeId: number) => {
+    selectShape: (state, shapeId: number | null) => {
       state.selectedShapeId = shapeId;
 
       return state;

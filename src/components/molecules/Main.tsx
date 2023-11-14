@@ -23,6 +23,12 @@ export default function Main({ children }: ReactPropsChildren) {
     };
   }, [currentItem]); 
 
+  useEffect(() => {
+    if (currentItem === NavigationsElement.CURSOR) {
+      document.body.style.cursor = "default";
+    }
+  }, [currentItem]);
+
   // Handler
   const handleMouseOver = () => {
     const cursor = currentItem === NavigationsElement.CURSOR ? "default" : "crosshair";

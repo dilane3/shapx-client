@@ -25,7 +25,7 @@ export default class Circle extends Shape {
   // Methods
 
   perimeter(): number {
-    return 2 * this._radius * Circle.pi;
+    return 2 * Math.abs(this.radius) * Circle.pi;
   }
 
   area(): number {

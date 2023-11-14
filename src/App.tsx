@@ -40,7 +40,7 @@ function App() {
 
   // Global actions
   const { setCurrentItem } = useActions<NavigationActions>("navigation");
-  const { addShape, updateShape } = useActions<DrawingActions>("drawing");
+  const { addShape, updateShape, selectShape } = useActions<DrawingActions>("drawing");
 
   // useEffect(() => {
   //   if (!canvaRef.current) return;
@@ -125,8 +125,6 @@ function App() {
         case ShapeElement.CIRCLE: {
           const shape = new Circle(
             selectedShape.id,
-            // (currentX + selectedShape.x)/2,
-            // (currentY + selectedShape.y)/2,
             selectedShape.x,
             selectedShape.y,
             selectedShape.color,
@@ -145,7 +143,7 @@ function App() {
   };
 
   const handleMouseUp = () => {
-    console.log("finished");
+    setCurrentItem({ item: NavigationsElement.CURSOR });
 
     setIsDrawing(false);
   };
@@ -176,7 +174,7 @@ function App() {
             generateId(),
             position.x,
             position.y,
-            "lightgrey",
+            "#D3D3D3",
             0,
             0
           );
@@ -193,7 +191,7 @@ function App() {
             generateId(),
             position.x,
             position.y,
-            "lightgrey",
+            "#D3D3D3",
             0
           );
 
@@ -208,6 +206,10 @@ function App() {
     }
   };
 
+  const handleDeselect = () => {
+    selectShape(null);
+  }
+
   return (
     <Layout>
       <section
@@ -218,6 +220,7 @@ function App() {
           width={window.innerWidth}
           height={window.innerHeight}
           scale={{ x: 1, y: 1 }}
+          // onClick={handleDeselect}
         >
           <Layer>{handleDisplayShapes()}</Layer>
         </Stage>
