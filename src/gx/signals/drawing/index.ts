@@ -11,7 +11,7 @@ export const drawingSignal = createSignal<DrawingState>({
     files: [file],
     loading: true,
     current: file,
-    selectedShape: null
+    selectedShapeId: null
   },
   actions: {
     loadFiles: (state, files: Array<File>) => {
@@ -45,6 +45,7 @@ export const drawingSignal = createSignal<DrawingState>({
 
       if (file) {
         file.add(payload.shape);
+        state.selectedShapeId = payload.shape.id;
       }
 
       return state;
@@ -72,10 +73,33 @@ export const drawingSignal = createSignal<DrawingState>({
       return state;
     },
 
-    selectShape: (state, shape: Shape) => {
-      state.selectedShape = shape;
+    selectShape: (state, shapeId: number) => {
+      state.selectedShapeId = shapeId;
 
       return state;
     } 
+  },
+
+  // List of operations
+  operations: {
+    getSelectedShape: (state) => {
+      if (state.selectedShapeId) {
+        const file = state.files.find(file => file.id === state.current?.id);
+
+        if (file) {
+          return file.getShape(state.selectedShapeId);
+        }
+      }
+
+      return null;
+    },
+
+    getCurrentFile: (state) => {
+      if (state.current) {
+        return state.files.find(file => file.id === state.current?.id)
+      }
+
+      return null;
+    }
   }
 });

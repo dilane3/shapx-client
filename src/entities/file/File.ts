@@ -61,4 +61,8 @@ export default class File implements IFile {
       this._shapes[position] = shape;
     }
   }
+
+  getShape(shapeId: number) {
+    return this._shapes.find(shape => shape.id === shapeId) || null;
+  }
 }

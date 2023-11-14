@@ -39,10 +39,10 @@ export default class Rectangle extends Shape {
   // Methods
 
   perimeter(): number {
-    return (this._width + this._height) * 2;
+    return (Math.abs(this.width) + Math.abs(this.height)) * 2;
   }
 
   area(): number {
-    return this._width * this._height;
+    return Math.abs(this.width) * Math.abs(this.height);
   }
 }
