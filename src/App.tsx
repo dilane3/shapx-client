@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Stage, Layer } from "react-konva";
+import { Stage, Layer, RegularPolygon } from "react-konva";
 import React from "react";
 import Layout from "./components/layouts/Layout";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
@@ -22,6 +22,8 @@ import { generateId } from "./common/utils";
 import ShapeFactory from "./entities/factories/ShapeFactory";
 import EllipseUI from "./components/atoms/Shapes/Ellipse";
 import Ellipse from "./entities/shapes/Ellipse";
+import HexagonUI from "./components/atoms/Shapes/Hexagon";
+import Hexagon from "./entities/shapes/Hexagon";
 
 function App() {
   const canvaRef = React.useRef<HTMLElement>(null);
@@ -128,8 +130,8 @@ function App() {
         case ShapeElement.RECTANGLE:
           return <RectUI key={shape.id} shape={shape as Rectangle} />;
 
-        // case ShapeElement.CIRCLE:
-        //   return <CircleUI key={shape.id} shape={shape as Circle} />;
+        case ShapeElement.POLYGON:
+          return <HexagonUI key={shape.id} shape={shape as Hexagon} />;
 
         case ShapeElement.ELLIPSE: 
           return <EllipseUI key={shape.id} shape={shape as Ellipse} />;

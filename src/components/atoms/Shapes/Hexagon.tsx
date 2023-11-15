@@ -1,26 +1,27 @@
 import { useEffect, useMemo, useRef } from "react";
-import Rectangle from "../../../entities/shapes/Rectangle";
-import { Rect, Transformer } from "react-konva";
+import { RegularPolygon, Transformer } from "react-konva";
 import Konva from "konva";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import {
   NavigationState,
-  NavigationsElement,
+  NavigationsElement
 } from "../../../gx/signals/navigation/types";
 import {
   DrawingActions,
-  DrawingOperations,
   DrawingState,
+  DrawingOperations,
 } from "../../../gx/signals/drawing/types";
 import ShapeFactory from "../../../entities/factories/ShapeFactory";
+import Hexagon from '../../../entities/shapes/Hexagon';
 
 type Props = {
-  shape: Rectangle;
+  shape: Hexagon;
 };
 
-export default function RectUI({ shape }: Props) {
+export default function HexagonUI({ shape }: Props) {
   // Ref
-  const shapeRef = useRef<Konva.Rect>(null);
+  const shapeRef = useRef<Konva.RegularPolygon>(null);
+
   const trRef = useRef<Konva.Transformer>(null);
 
   // Global state
@@ -30,7 +31,11 @@ export default function RectUI({ shape }: Props) {
   const { selectShape, updateShape } = useActions<DrawingActions>("drawing");
 
   // Global state
-  const { current: file, files, selectedShapeId } = useSignal<DrawingState>("drawing");
+  const {
+    current: file,
+    files,
+    selectedShapeId,
+  } = useSignal<DrawingState>("drawing");
 
   // Operations
   const { getSelectedShape } = useOperations<DrawingOperations>("drawing");
@@ -45,12 +50,6 @@ export default function RectUI({ shape }: Props) {
 
     shapeRef.current.addEventListener("click", handleSelect);
     shapeRef.current.addEventListener("dragstart", handleSelect);
-    shapeRef.current.addEventListener("contextmenu", handleContextMenu);
-
-    return () => {
-      shapeRef.current?.removeEventListener("click");
-      shapeRef.current?.removeEventListener("dragstart");
-    };
   }, []);
 
   useEffect(() => {
@@ -63,12 +62,8 @@ export default function RectUI({ shape }: Props) {
     }
   }, [selectedShape]);
 
-  const handleSelect = (_: any) => {
+  const handleSelect = () => {
     selectShape(shape.id);
-  };
-
-  const handleContextMenu = (e: Event) => {
-    e.preventDefault();
   };
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
@@ -90,12 +85,10 @@ export default function RectUI({ shape }: Props) {
 
     // Update shape
     updateShape({ id: file.id, shape: updatedShape });
-  }
+  };
 
   const handleTransformEnd = (_: Konva.KonvaEventObject<Event>) => {
     if (!file || !shapeRef.current) return;
-
-    console.log("hello")
 
     // Get new scale values
     const node = shapeRef.current;
@@ -103,8 +96,7 @@ export default function RectUI({ shape }: Props) {
     const scaleY = node.scaleY();
 
     // Get new properties
-    const width = Math.round(node.width() * scaleX);
-    const height = Math.round(node.height() * scaleY);
+    const radius = (Math.round(node.radius() * scaleX) + Math.round(node.radius() * scaleY)) /2;
     const rotate = Math.round(node.rotation());
 
     // Get a factory
@@ -116,8 +108,7 @@ export default function RectUI({ shape }: Props) {
       x: Math.round(node.x()),
       y: Math.round(node.y()),
       rotate,
-      width,
-      height,
+      radius
     });
 
     // Update shape
@@ -130,12 +121,12 @@ export default function RectUI({ shape }: Props) {
 
   return (
     <>
-      <Rect
+      <RegularPolygon
         ref={shapeRef}
         x={shape.x}
         y={shape.y}
-        width={shape.width}
-        height={shape.height}
+        sides={shape.sides}
+        radius={shape.radius}
         rotation={shape.rotate}
         fill={shape.color}
         draggable={currentItem === NavigationsElement.CURSOR}

@@ -88,7 +88,7 @@ export default function CircleUI({ shape }: Props) {
     updateShape({ id: file.id, shape: updatedShape });
   };
 
-  const handleTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
+  const handleTransform = (_: Konva.KonvaEventObject<Event>) => {
     if (!file || !shapeRef.current) return;
 
     // Get new scale values
@@ -148,7 +148,7 @@ export default function CircleUI({ shape }: Props) {
         fill={shape.color}
         draggable={currentItem === NavigationsElement.CURSOR}
         onDragEnd={handleDragEnd}
-        onTransformEnd={handleTransformEnd}
+        onTransform={handleTransform}
       />
 
       {selectedShape?.id === shape.id && (
