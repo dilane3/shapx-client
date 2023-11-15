@@ -41,14 +41,14 @@ export default class Rectangle extends Shape {
   perimeter(): number {
     const P = (Math.abs(this.width) + Math.abs(this.height)) * 2;
 
-    // Truncate the result 2 numbers after the result
+    // Truncate the result 2 numbers after the comma
     return Math.floor(P * 100) / 100;
   }
 
   area(): number {
     const A = Math.abs(this.width) * Math.abs(this.height);
 
-    // Truncate the result 2 numbers after the result
+    // Truncate the result 2 numbers after the comma
     return Math.floor(A * 100) / 100;
   }
 

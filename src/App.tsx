@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Stage, Layer, RegularPolygon } from "react-konva";
+import { Stage, Layer, Rect } from "react-konva";
 import React from "react";
 import Layout from "./components/layouts/Layout";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
@@ -14,19 +14,22 @@ import {
   NavigationsElement,
   ShapeElement,
 } from "./gx/signals/navigation/types";
-import RectUI from "./components/atoms/Shapes/Rectangle";
 import Rectangle from "./entities/shapes/Rectangle";
-import CircleUI from "./components/atoms/Shapes/Circle";
-import Circle from "./entities/shapes/Circle";
-import { generateId } from "./common/utils";
-import ShapeFactory from "./entities/factories/ShapeFactory";
-import EllipseUI from "./components/atoms/Shapes/Ellipse";
-import Ellipse from "./entities/shapes/Ellipse";
-import HexagonUI from "./components/atoms/Shapes/Hexagon";
 import Hexagon from "./entities/shapes/Hexagon";
+import Ellipse from "./entities/shapes/Ellipse";
+import ShapeFactory from "./entities/factories/ShapeFactory";
+import { generateId } from "./common/utils";
+import RectUI from "./components/atoms/Shapes/Rectangle";
+import EllipseUI from "./components/atoms/Shapes/Ellipse";
+import HexagonUI from "./components/atoms/Shapes/Hexagon";
+import { Button } from "@material-tailwind/react";
+import Konva from "konva";
+import Diamond from "./entities/shapes/Diamond";
+import DiamondUI from "./components/atoms/Shapes/Diamond";
 
 function App() {
   const canvaRef = React.useRef<HTMLElement>(null);
+  const stageRef = React.useRef<Konva.Stage>(null);
 
   // Local state
   const [isDrawing, setIsDrawing] = useState(false);
@@ -46,7 +49,8 @@ function App() {
 
   // Global actions
   const { setCurrentItem } = useActions<NavigationActions>("navigation");
-  const { addShape, updateShape, selectShape, removeUndesirableShapes } = useActions<DrawingActions>("drawing");
+  const { addShape, updateShape, selectShape, removeUndesirableShapes } =
+    useActions<DrawingActions>("drawing");
 
   useEffect(() => {
     if (!canvaRef.current) return;
@@ -108,6 +112,7 @@ function App() {
       const updatedShape = shapeFactory.create(selectedShape.type, {
         ...selectedShape.properties(),
         width: w,
+        side: w,
         height: h,
         radius: w,
         radiusY: h,
@@ -133,8 +138,11 @@ function App() {
         case ShapeElement.POLYGON:
           return <HexagonUI key={shape.id} shape={shape as Hexagon} />;
 
-        case ShapeElement.ELLIPSE: 
+        case ShapeElement.ELLIPSE:
           return <EllipseUI key={shape.id} shape={shape as Ellipse} />;
+
+        case ShapeElement.DIAMOND: 
+          return <DiamondUI key={shape.id} shape={shape as Diamond} />;
 
         default:
           return null;
@@ -157,9 +165,10 @@ function App() {
         color: "#D3D3D3",
         rotate: 0,
         width: 0,
+        side: 0,
         height: 0,
         radius: 0,
-        radiusY: 0
+        radiusY: 0,
       });
 
       setNewShapeId(shapeId);
@@ -167,32 +176,50 @@ function App() {
     }
   };
 
-  const handleDeselect = () => {
-    selectShape(null);
-  }
+  const handleExportToImage = () => {
+    if (!stageRef.current) return;
+
+    const canvaElement = stageRef.current;
+
+    const dataURL = canvaElement.toDataURL({
+      mimeType: "image/png",
+      quality: 1,
+      pixelRatio: 1,
+    });
+
+    const link = document.createElement("a");
+    link.download = "image.png";
+    link.href = dataURL;
+    link.click();
+  };
 
   return (
     <Layout>
       <section
         ref={canvaRef}
-        className="w-full h-full bg-white overflow-hidden"
+        className="w-full h-full bg-whitte overflow-hidden"
       >
+        <Button className="bg-primary" onClick={handleExportToImage}>
+          Export
+        </Button>
         <Stage
-          width={window.innerWidth}
-          height={window.innerHeight}
+          id="canva"
+          ref={stageRef}
+          width={canvaRef.current?.clientWidth}
+          height={canvaRef.current?.clientHeight}
           scale={{ x: 1, y: 1 }}
-          // onClick={handleDeselect}
+          style={{ backgroundColor: "#FFF" }}
+          className="w-full h-full"
         >
-          <Layer>{handleDisplayShapes()}
-            <RegularPolygon 
-              x={200}
-              y={200}
-              sides={4}
-              radius={100}
-              radiusY={200}
-              fill="red"
-              draggable
+          <Layer>
+            <Rect
+              x={0}
+              y={0}
+              width={canvaRef.current?.clientWidth}
+              height={canvaRef.current?.clientHeight}
+              fill="#FFF"
             />
+            {handleDisplayShapes()}
           </Layer>
         </Stage>
       </section>

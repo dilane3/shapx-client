@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useRef } from "react";
-import { Circle, Transformer } from "react-konva";
+import { RegularPolygon, Transformer } from "react-konva";
 import Konva from "konva";
-import CircleEntity from "../../../entities/shapes/Circle";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import {
   NavigationState,
-  NavigationsElement,
-  ShapeElement,
+  NavigationsElement
 } from "../../../gx/signals/navigation/types";
 import {
   DrawingActions,
@@ -14,14 +12,15 @@ import {
   DrawingOperations,
 } from "../../../gx/signals/drawing/types";
 import ShapeFactory from "../../../entities/factories/ShapeFactory";
+import Diamond from "../../../entities/shapes/Diamond";
 
 type Props = {
-  shape: CircleEntity;
+  shape: Diamond;
 };
 
-export default function CircleUI({ shape }: Props) {
+export default function DiamondUI({ shape }: Props) {
   // Ref
-  const shapeRef = useRef<Konva.Circle>(null);
+  const shapeRef = useRef<Konva.RegularPolygon>(null);
 
   const trRef = useRef<Konva.Transformer>(null);
 
@@ -88,67 +87,53 @@ export default function CircleUI({ shape }: Props) {
     updateShape({ id: file.id, shape: updatedShape });
   };
 
-  const handleTransform = (_: Konva.KonvaEventObject<Event>) => {
+  const handleTransformEnd = (_: Konva.KonvaEventObject<Event>) => {
     if (!file || !shapeRef.current) return;
 
     // Get new scale values
     const node = shapeRef.current;
     const scaleX = node.scaleX();
-    const scaleY = node.scaleY();
 
     // Get new properties
-    const radiusX = Math.round(node.radius() * scaleX);
-    const width = Math.round(node.width() * scaleX);
-    const height = Math.round(node.height() * scaleY);
+    const rotate = Math.round(node.rotation());
+    const radius = Math.round(node.radius() * scaleX);
+
+    // Get new side based on radius
+    const side = Math.round(2 * radius / Math.sqrt(2));
 
     // Get a factory
     const shapeFactory = new ShapeFactory();
 
-    // Deal with the type of the shape
-    let shapeType = shape.type;
-
-    if (
-      shapeType === ShapeElement.CIRCLE ||
-      shapeType === ShapeElement.ELLIPSE
-    ) {
-      if (radiusX === height) {
-        shapeType = ShapeElement.CIRCLE;
-      } else {
-        shapeType = ShapeElement.ELLIPSE;
-      }
-    }
-
     // Create a new shape with new position
-    const updatedShape = shapeFactory.create(shapeType, {
+    const updatedShape = shapeFactory.create(shape.type, {
       ...shape.properties(),
-      type: shapeType,
       x: Math.round(node.x()),
       y: Math.round(node.y()),
-      radius: radiusX,
-      radiusY: height,
-      width,
-      height,
+      rotate,
+      side
     });
+
+    // Update shape
+    updateShape({ id: file.id, shape: updatedShape });
 
     // Reset scale
     node.scaleX(1);
     node.scaleY(1);
-
-    // Update shape
-    updateShape({ id: file.id, shape: updatedShape });
   };
 
   return (
     <>
-      <Circle
+      <RegularPolygon
         ref={shapeRef}
         x={shape.x}
         y={shape.y}
-        radius={shape.radius}
+        sides={4}
+        radius={shape.diagonal / 2}
+        rotation={shape.rotate}
         fill={shape.color}
         draggable={currentItem === NavigationsElement.CURSOR}
         onDragEnd={handleDragEnd}
-        onTransform={handleTransform}
+        onTransformEnd={handleTransformEnd}
       />
 
       {selectedShape?.id === shape.id && (

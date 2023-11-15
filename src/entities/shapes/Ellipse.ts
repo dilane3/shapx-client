@@ -46,14 +46,14 @@ export default class Ellipse extends Circle {
           (3 * this.radius + this.radiusY) * (this.radius + 3 * this.radiusY)
         ));
 
-    // Truncate the result 2 numbers after the result
+    // Truncate the result 2 numbers after the comma
     return Math.floor(P * 100) / 100;
   }
 
   area(): number {
     const A = Ellipse.PI * this.radius * this.radiusY;
 
-    // Truncate the result 2 numbers after the result
+    // Truncate the result 2 numbers after the comma
     return Math.floor(A * 100) / 100;
   }
 

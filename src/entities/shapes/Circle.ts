@@ -27,14 +27,14 @@ export default class Circle extends Shape {
   perimeter(): number {
     const P = 2 * Math.abs(this.radius) * Circle.PI;
 
-    // Truncate the result 2 numbers after the result
+    // Truncate the result 2 numbers after the comma
     return Math.floor(P * 100) / 100;
   }
 
   area(): number {
     const A = Circle.PI * Math.pow(this._radius, 2);
 
-    // Truncate the result 2 numbers after the result
+    // Truncate the result 2 numbers after the comma
     return Math.floor(A * 100) / 100;
   }
 

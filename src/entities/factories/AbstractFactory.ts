@@ -11,6 +11,7 @@ export type ShapeData = {
   height?: number;
   radius?: number;
   radiusY?: number;
+  side?: number;
 };
 
 export default abstract class AbstractShapeFactory {

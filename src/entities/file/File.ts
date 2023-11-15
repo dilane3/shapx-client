@@ -2,7 +2,9 @@ import { ShapeElement } from "../../gx/signals/navigation/types";
 import IFile from "../abstraction/File";
 import Shape from "../abstraction/Shape";
 import Circle from "../shapes/Circle";
+import Diamond from "../shapes/Diamond";
 import Ellipse from "../shapes/Ellipse";
+import Hexagon from "../shapes/Hexagon";
 import Rectangle from "../shapes/Rectangle";
 
 /**
@@ -81,6 +83,14 @@ export default class File implements IFile {
           return (
             (shape as Rectangle).width > 0 && (shape as Rectangle).height > 0
           );
+        }
+
+        case ShapeElement.DIAMOND: {
+          return (shape as Diamond).side > 0;
+        }
+
+        case ShapeElement.POLYGON: {
+          return (shape as Hexagon).radius > 0;
         }
 
         default: {

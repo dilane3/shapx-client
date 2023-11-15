@@ -1,16 +1,11 @@
 import { ShapeElement } from "../../gx/signals/navigation/types";
 import Shape from "../abstraction/Shape";
 
-export default class Hexagon extends Shape {
+export default class Diamond extends Shape {
   /**
-   * Number of sides of the hexagon
+   * Value of the side of the diamond
    */
-  private _sides: number;
-
-  /**
-   * Radius of the hexagon
-   */
-  private _radius: number;
+  private _side: number;
 
   constructor(
     id: number,
@@ -18,44 +13,38 @@ export default class Hexagon extends Shape {
     y: number,
     color: string,
     rotate: number,
-    r: number,
     s: number
   ) {
-    super(id, ShapeElement.POLYGON, x, y, color, rotate);
+    super(id, ShapeElement.DIAMOND, x, y, color, rotate);
 
-    this._radius = r;
-    this._sides = s;
+    this._side = s;
   }
 
   // Getters
 
-  get radius() {
-    return this._radius;
+  get side() {
+    return this._side;
   }
 
-  get sides() {
-    return this._sides;
+  get diagonal(): number {
+    return (Math.sqrt(2) * this.side);
   }
 
   // Setters
 
-  set radius(r: number) {
-    this._radius = r;
-  }
-
-  set sides(s: number) {
-    this._sides = s;
+  set side(s: number) {
+    this._side = s;
   }
 
   perimeter(): number {
-    const P = this.radius * this.sides;
+    const P = this.side * 4;
 
     // Truncate the result 2 numbers after the comma
     return Math.floor(P * 100) / 100;
   }
 
   area(): number {
-    const A = (3 * Math.sqrt(3) * Math.pow(this.radius, 2)) / 2;
+    const A = Math.pow(this.side, 2);
 
     // Truncate the result 2 numbers after the comma
     return Math.floor(A * 100) / 100;
@@ -74,8 +63,7 @@ export default class Hexagon extends Shape {
       y: this.y,
       color: this.color,
       rotate: this.rotate,
-      radius: this.radius,
-      sides: this.sides,
+      side: this.side,
     };
   }
 }
