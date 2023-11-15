@@ -20,6 +20,8 @@ import CircleUI from "./components/atoms/Shapes/Circle";
 import Circle from "./entities/shapes/Circle";
 import { generateId } from "./common/utils";
 import ShapeFactory from "./entities/factories/ShapeFactory";
+import EllipseUI from "./components/atoms/Shapes/Ellipse";
+import Ellipse from "./entities/shapes/Ellipse";
 
 function App() {
   const canvaRef = React.useRef<HTMLElement>(null);
@@ -102,13 +104,11 @@ function App() {
 
       // Update the shape
       const updatedShape = shapeFactory.create(selectedShape.type, {
-        id: selectedShape.id,
-        x: selectedShape.x,
-        y: selectedShape.y,
-        color: selectedShape.color,
+        ...selectedShape.properties(),
         width: w,
         height: h,
         radius: w,
+        radiusY: h,
       });
 
       updateShape({ id: file.id, shape: updatedShape });
@@ -128,8 +128,11 @@ function App() {
         case ShapeElement.RECTANGLE:
           return <RectUI key={shape.id} shape={shape as Rectangle} />;
 
-        case ShapeElement.CIRCLE:
-          return <CircleUI key={shape.id} shape={shape as Circle} />;
+        // case ShapeElement.CIRCLE:
+        //   return <CircleUI key={shape.id} shape={shape as Circle} />;
+
+        case ShapeElement.ELLIPSE: 
+          return <EllipseUI key={shape.id} shape={shape as Ellipse} />;
 
         default:
           return null;
@@ -150,9 +153,11 @@ function App() {
         x: position.x,
         y: position.y,
         color: "#D3D3D3",
+        rotate: 0,
         width: 0,
         height: 0,
         radius: 0,
+        radiusY: 0
       });
 
       setNewShapeId(shapeId);

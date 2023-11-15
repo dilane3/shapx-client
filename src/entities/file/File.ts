@@ -2,6 +2,7 @@ import { ShapeElement } from "../../gx/signals/navigation/types";
 import IFile from "../abstraction/File";
 import Shape from "../abstraction/Shape";
 import Circle from "../shapes/Circle";
+import Ellipse from "../shapes/Ellipse";
 import Rectangle from "../shapes/Rectangle";
 
 /**
@@ -72,8 +73,8 @@ export default class File implements IFile {
   removeUndesirableShapes() {
     this._shapes = this._shapes.filter((shape) => {
       switch (shape.type) {
-        case ShapeElement.CIRCLE: {
-          return (shape as Circle).radius > 0;
+        case ShapeElement.ELLIPSE: {
+          return (shape as Ellipse).radius > 0 && (shape as Ellipse).radiusY > 0;
         }
 
         case ShapeElement.RECTANGLE: {

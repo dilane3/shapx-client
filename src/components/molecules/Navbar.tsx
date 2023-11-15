@@ -8,7 +8,8 @@ import {
 
 export default function Navbar() {
   // Global state
-  const { currentItem, currentShape } = useSignal<NavigationState>("navigation");
+  const { currentItem, currentShape } =
+    useSignal<NavigationState>("navigation");
 
   // Handlers
   const handleGetShapeIcon = () => {
@@ -17,6 +18,8 @@ export default function Navbar() {
         return "square";
       case ShapeElement.CIRCLE:
         return "circle";
+      case ShapeElement.ELLIPSE:
+        return "circle";
       case ShapeElement.POLYGON:
         return "hexagon";
       case ShapeElement.DIAMOND:
@@ -24,7 +27,7 @@ export default function Navbar() {
       default:
         return "square";
     }
-  }
+  };
 
   return (
     <header className="w-full h-12 bg-secondary flex justify-start items-center px-8 border-b-[1px] border-gray">

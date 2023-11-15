@@ -1,27 +1,28 @@
 import { useEffect, useMemo, useRef } from "react";
-import Rectangle from "../../../entities/shapes/Rectangle";
-import { Rect, Transformer } from "react-konva";
+import { Ellipse, Transformer } from "react-konva";
 import Konva from "konva";
+import EllipseEntity from "../../../entities/shapes/Ellipse";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import {
   NavigationState,
   NavigationsElement,
+  ShapeElement,
 } from "../../../gx/signals/navigation/types";
 import {
   DrawingActions,
-  DrawingOperations,
   DrawingState,
+  DrawingOperations,
 } from "../../../gx/signals/drawing/types";
-import { Menu, MenuItem, MenuList } from "@material-tailwind/react";
 import ShapeFactory from "../../../entities/factories/ShapeFactory";
 
 type Props = {
-  shape: Rectangle;
+  shape: EllipseEntity;
 };
 
-export default function RectUI({ shape }: Props) {
+export default function EllipseUI({ shape }: Props) {
   // Ref
-  const shapeRef = useRef<Konva.Rect>(null);
+  const shapeRef = useRef<Konva.Ellipse>(null);
+
   const trRef = useRef<Konva.Transformer>(null);
 
   // Global state
@@ -31,7 +32,11 @@ export default function RectUI({ shape }: Props) {
   const { selectShape, updateShape } = useActions<DrawingActions>("drawing");
 
   // Global state
-  const { current: file, files, selectedShapeId } = useSignal<DrawingState>("drawing");
+  const {
+    current: file,
+    files,
+    selectedShapeId,
+  } = useSignal<DrawingState>("drawing");
 
   // Operations
   const { getSelectedShape } = useOperations<DrawingOperations>("drawing");
@@ -46,12 +51,6 @@ export default function RectUI({ shape }: Props) {
 
     shapeRef.current.addEventListener("click", handleSelect);
     shapeRef.current.addEventListener("dragstart", handleSelect);
-    shapeRef.current.addEventListener("contextmenu", handleContextMenu);
-
-    return () => {
-      shapeRef.current?.removeEventListener("click");
-      shapeRef.current?.removeEventListener("dragstart");
-    };
   }, []);
 
   useEffect(() => {
@@ -64,12 +63,8 @@ export default function RectUI({ shape }: Props) {
     }
   }, [selectedShape]);
 
-  const handleSelect = (_: any) => {
+  const handleSelect = () => {
     selectShape(shape.id);
-  };
-
-  const handleContextMenu = (e: Event) => {
-    e.preventDefault();
   };
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
@@ -91,19 +86,56 @@ export default function RectUI({ shape }: Props) {
 
     // Update shape
     updateShape({ id: file.id, shape: updatedShape });
-  }
+  };
+
+  const handleTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
+    if (!file || !shapeRef.current) return;
+
+    // Get new scale values
+    const node = shapeRef.current;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+
+    // Get new properties
+    const radiusX = Math.round(node.radiusX() * scaleX);
+    const radiusY = Math.round(node.radiusY() * scaleY);
+    const width = Math.round(node.width() * scaleX);
+    const height = Math.round(node.height() * scaleY);
+
+    // Get a factory
+    const shapeFactory = new ShapeFactory();
+
+    // Create a new shape with new position
+    const updatedShape = shapeFactory.create(shape.type, {
+      ...shape.properties(),
+      x: Math.round(node.x()),
+      y: Math.round(node.y()),
+      radius: radiusX,
+      radiusY,
+      width,
+      height,
+    });
+
+    // Update shape
+    updateShape({ id: file.id, shape: updatedShape });
+
+    // Reset scale
+    node.scaleX(1);
+    node.scaleY(1);
+  };
 
   return (
     <>
-      <Rect
+      <Ellipse
         ref={shapeRef}
         x={shape.x}
         y={shape.y}
-        width={shape.width}
-        height={shape.height}
+        radiusX={shape.radius}
+        radiusY={shape.radiusY}
         fill={shape.color}
         draggable={currentItem === NavigationsElement.CURSOR}
         onDragEnd={handleDragEnd}
+        onTransformEnd={handleTransformEnd}
       />
 
       {selectedShape?.id === shape.id && (

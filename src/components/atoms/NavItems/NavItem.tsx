@@ -105,11 +105,11 @@ export default function NavItem({
             </MenuItem>
             <MenuItem
               className="text-white font-latoRegular rounded-none px-8 hover:bg-primary-200"
-              onClick={() => handleChangeShape(ShapeElement.CIRCLE)}
+              onClick={() => handleChangeShape(ShapeElement.ELLIPSE)}
             >
               <div className="w-full flex flex-row items-center">
                 <Icon name="circle" size={18} />
-                <span className="ml-4">Circle</span>
+                <span className="ml-4">Ellipse</span>
               </div>
             </MenuItem>
             <MenuItem

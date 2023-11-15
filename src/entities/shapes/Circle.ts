@@ -4,10 +4,10 @@ import Shape from "../abstraction/Shape";
 export default class Circle extends Shape {
   private _radius: number;
 
-  static pi: number = 3.14;
+  static PI: number = Math.PI;
 
-  constructor(id: number, x: number, y: number, color: string, r: number) {
-    super(id, ShapeElement.CIRCLE, x, y, color);
+  constructor(id: number, x: number, y: number, color: string, rotate: number, r: number) {
+    super(id, ShapeElement.CIRCLE, x, y, color, rotate);
 
     this._radius = r;
   }
@@ -25,11 +25,17 @@ export default class Circle extends Shape {
   // Methods
 
   perimeter(): number {
-    return 2 * Math.abs(this.radius) * Circle.pi;
+    const P = 2 * Math.abs(this.radius) * Circle.PI;
+
+    // Truncate the result 2 numbers after the result
+    return Math.floor(P * 100) / 100;
   }
 
   area(): number {
-    return Circle.pi * Math.pow(this._radius, 2);
+    const A = Circle.PI * Math.pow(this._radius, 2);
+
+    // Truncate the result 2 numbers after the result
+    return Math.floor(A * 100) / 100;
   }
 
   // Extra methods

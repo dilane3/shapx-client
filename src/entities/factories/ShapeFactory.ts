@@ -3,6 +3,7 @@ import {
   ShapeElementType,
 } from "../../gx/signals/navigation/types";
 import Circle from "../shapes/Circle";
+import Ellipse from "../shapes/Ellipse";
 import Rectangle from "../shapes/Rectangle";
 import AbstractShapeFactory, { ShapeData } from "./AbstractFactory";
 
@@ -15,7 +16,19 @@ export default class ShapeFactory extends AbstractShapeFactory {
           data.x,
           data.y,
           data.color,
+          data.rotate,
           data.radius as number
+        );
+
+      case ShapeElement.ELLIPSE:
+        return new Ellipse(
+          data.id,
+          data.x,
+          data.y,
+          data.color,
+          data.rotate,
+          data.radius as number,
+          data.radiusY as number
         );
 
       case ShapeElement.RECTANGLE:
@@ -24,10 +37,11 @@ export default class ShapeFactory extends AbstractShapeFactory {
           data.x,
           data.y,
           data.color,
+          data.rotate,
           data.width as number,
           data.height as number
         );
-        
+
       default:
         throw new Error("Invalid shape type");
     }

@@ -35,6 +35,8 @@ export default function ShapeItem({ shape }: Props) {
         return "square";
       case ShapeElement.CIRCLE:
         return "circle";
+      case ShapeElement.ELLIPSE: 
+        return "circle";
       case ShapeElement.POLYGON:
         return "hexagon";
       case ShapeElement.DIAMOND:

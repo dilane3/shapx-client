@@ -9,6 +9,7 @@ export type NavigationsElementType =
 export const ShapeElement = {
   RECTANGLE: "rectangle",
   CIRCLE: "circle",
+  ELLIPSE: "ellipse",
   POLYGON: "polygon",
   DIAMOND: "diamond",
 };

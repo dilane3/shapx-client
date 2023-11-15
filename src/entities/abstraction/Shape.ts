@@ -6,13 +6,15 @@ export default abstract class Shape {
   private _x: number;
   private _y: number;
   private _color: string;
+  private _rotate: number;
 
-  constructor(id: number, type: ShapeElementType, x: number, y: number, color: string) {
+  constructor(id: number, type: ShapeElementType, x: number, y: number, color: string, rotate: number) {
     this._id = id;
     this._type = type;
     this._x = x;
     this._y = y;
     this._color = color;
+    this._rotate = rotate;
   }
 
   // Getters
@@ -36,6 +38,19 @@ export default abstract class Shape {
     return this._color;
   }
 
+  get rotate() {
+    return this._rotate;
+  }
+
+  // Setters
+  set type(t: ShapeElementType) {
+    this._type = t;
+  }
+
+  set rotate(r: number) {
+    this._rotate = r;
+  }
+
   // Methods
 
   /**
@@ -47,4 +62,7 @@ export default abstract class Shape {
    * This method calculate the area of a given Shape
    */
   abstract area(): number;
+
+  // Extra methods
+  abstract properties(): any;
 }

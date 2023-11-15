@@ -6,9 +6,11 @@ export type ShapeData = {
   x: number;
   y: number;
   color: string;
+  rotate: number;
   width?: number;
   height?: number;
   radius?: number;
+  radiusY?: number;
 };
 
 export default abstract class AbstractShapeFactory {

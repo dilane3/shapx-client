@@ -8,8 +8,8 @@ export default class Rectangle extends Shape {
   private _width: number;
   private _height: number;
 
-  constructor(id: number, x: number, y: number, c: string, w: number, h: number) {
-    super(id, ShapeElement.RECTANGLE, x, y, c);
+  constructor(id: number, x: number, y: number, c: string, rotate: number, w: number, h: number) {
+    super(id, ShapeElement.RECTANGLE, x, y, c, rotate);
 
     this._width = w;
     this._height = h;
@@ -39,11 +39,17 @@ export default class Rectangle extends Shape {
   // Methods
 
   perimeter(): number {
-    return (Math.abs(this.width) + Math.abs(this.height)) * 2;
+    const P = (Math.abs(this.width) + Math.abs(this.height)) * 2;
+
+    // Truncate the result 2 numbers after the result
+    return Math.floor(P * 100) / 100;
   }
 
   area(): number {
-    return Math.abs(this.width) * Math.abs(this.height);
+    const A = Math.abs(this.width) * Math.abs(this.height);
+
+    // Truncate the result 2 numbers after the result
+    return Math.floor(A * 100) / 100;
   }
 
   // Extra methods
