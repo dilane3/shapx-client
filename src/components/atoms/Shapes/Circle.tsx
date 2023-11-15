@@ -5,6 +5,7 @@ import CircleEntity from "../../../entities/shapes/Circle";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import { NavigationState, NavigationsElement } from "../../../gx/signals/navigation/types";
 import { DrawingActions, DrawingState, DrawingOperations } from "../../../gx/signals/drawing/types";
+import ShapeFactory from "../../../entities/factories/ShapeFactory";
 
 type Props = {
   shape: CircleEntity
@@ -20,10 +21,10 @@ export default function CircleUI({ shape }: Props) {
   const { currentItem } = useSignal<NavigationState>("navigation");
 
   // Global action
-  const { selectShape } = useActions<DrawingActions>("drawing");
+  const { selectShape, updateShape } = useActions<DrawingActions>("drawing");
 
   // Global state
-  const { files, selectedShapeId } = useSignal<DrawingState>("drawing");
+  const { current: file, files, selectedShapeId } = useSignal<DrawingState>("drawing");
 
   // Operations
   const { getSelectedShape } = useOperations<DrawingOperations>("drawing");
@@ -63,6 +64,26 @@ export default function CircleUI({ shape }: Props) {
         radius={shape.radius}
         fill={shape.color}
         draggable={currentItem === NavigationsElement.CURSOR}
+        onDragEnd={(e) => {
+          if (!file) return;
+
+          // Get new position
+          const x = Math.round(e.target.x());
+          const y = Math.round(e.target.y());
+
+          // Get a factory
+          const shapeFactory = new ShapeFactory();
+
+          // Create a new shape with new position
+          const updatedShape = shapeFactory.create(shape.type, {
+            ...shape.properties(),
+            x,
+            y,
+          });
+
+          // Update shape
+          updateShape({ id: file.id, shape: updatedShape });
+        }}
       />
 
 {selectedShape?.id === shape.id && (
