@@ -44,7 +44,7 @@ export default class Diamond extends Shape {
   }
 
   area(): number {
-    const A = Math.pow(this.side, 2);
+    const A = Math.pow(this.diagonal, 2) / 2;
 
     // Truncate the result 2 numbers after the comma
     return Math.floor(A * 100) / 100;
