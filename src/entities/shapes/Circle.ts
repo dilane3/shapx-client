@@ -31,4 +31,20 @@ export default class Circle extends Shape {
   area(): number {
     return Circle.pi * Math.pow(this._radius, 2);
   }
+
+  // Extra methods
+
+  /**
+   * Return the properties of the shape
+   */
+  properties(): any {
+    return {
+      id: this.id,
+      type: this.type,
+      x: this.x,
+      y: this.y,
+      color: this.color,
+      radius: this.radius,
+    }
+  }
 }

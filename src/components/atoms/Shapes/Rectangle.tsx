@@ -12,6 +12,8 @@ import {
   DrawingOperations,
   DrawingState,
 } from "../../../gx/signals/drawing/types";
+import { Menu, MenuItem, MenuList } from "@material-tailwind/react";
+import ShapeFactory from "../../../entities/factories/ShapeFactory";
 
 type Props = {
   shape: Rectangle;
@@ -26,10 +28,10 @@ export default function RectUI({ shape }: Props) {
   const { currentItem } = useSignal<NavigationState>("navigation");
 
   // Global action
-  const { selectShape } = useActions<DrawingActions>("drawing");
+  const { selectShape, updateShape } = useActions<DrawingActions>("drawing");
 
   // Global state
-  const { files, selectedShapeId } = useSignal<DrawingState>("drawing");
+  const { current: file, files, selectedShapeId } = useSignal<DrawingState>("drawing");
 
   // Operations
   const { getSelectedShape } = useOperations<DrawingOperations>("drawing");
@@ -44,6 +46,12 @@ export default function RectUI({ shape }: Props) {
 
     shapeRef.current.addEventListener("click", handleSelect);
     shapeRef.current.addEventListener("dragstart", handleSelect);
+    shapeRef.current.addEventListener("contextmenu", handleContextMenu);
+
+    return () => {
+      shapeRef.current?.removeEventListener("click");
+      shapeRef.current?.removeEventListener("dragstart");
+    };
   }, []);
 
   useEffect(() => {
@@ -56,8 +64,12 @@ export default function RectUI({ shape }: Props) {
     }
   }, [selectedShape]);
 
-  const handleSelect = () => {
+  const handleSelect = (_: any) => {
     selectShape(shape.id);
+  };
+
+  const handleContextMenu = (e: Event) => {
+    e.preventDefault();
   };
 
   return (
@@ -70,7 +82,26 @@ export default function RectUI({ shape }: Props) {
         height={shape.height}
         fill={shape.color}
         draggable={currentItem === NavigationsElement.CURSOR}
-        // stroke={selectedShape?.id === shape.id ? "#FF626B" : "transparent"}
+        onDragEnd={(e) => {
+          if (!file) return;
+
+          // Get new position
+          const x = Math.round(e.target.x());
+          const y = Math.round(e.target.y());
+
+          // Get a factory
+          const shapeFactory = new ShapeFactory();
+
+          // Create a new shape with new position
+          const updatedShape = shapeFactory.create(shape.type, {
+            ...shape.properties(),
+            x,
+            y,
+          });
+
+          // Update shape
+          updateShape({ id: file.id, shape: updatedShape });
+        }}
       />
 
       {selectedShape?.id === shape.id && (
