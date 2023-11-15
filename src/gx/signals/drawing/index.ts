@@ -77,7 +77,18 @@ export const drawingSignal = createSignal<DrawingState>({
       state.selectedShapeId = shapeId;
 
       return state;
-    } 
+    },
+
+    removeUndesirableShapes: (state) => {
+      // Find the file by id
+      const file = state.files.find(file => file.id === state.current?.id);
+
+      if (file) {
+        file.removeUndesirableShapes();
+      }
+
+      return state;
+    }
   },
 
   // List of operations

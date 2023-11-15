@@ -22,6 +22,8 @@ export type DrawingActions = {
   updateShape: (payload: { id: number, shape: Shape }) => void,
 
   selectShape: (shapeId: number | null) => void,
+
+  removeUndesirableShapes: () => void,
 };
 
 export type DrawingOperations = {

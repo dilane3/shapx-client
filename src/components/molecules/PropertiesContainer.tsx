@@ -37,6 +37,8 @@ export default function PropertiesContainer() {
   }
 
   const handleUpdateShape = (color: string) => {
+    if (!selectedShape || !file) return;
+
     // Update the shape
     switch (selectedShape.type) {
       case ShapeElement.RECTANGLE: {
@@ -45,8 +47,8 @@ export default function PropertiesContainer() {
           selectedShape.x,
           selectedShape.y,
           color,
-          selectedShape.width,
-          selectedShape.height
+          (selectedShape as Rectangle).width,
+          (selectedShape as Rectangle).height
         );
 
         updateShape({ id: file.id, shape });
@@ -60,7 +62,7 @@ export default function PropertiesContainer() {
           selectedShape.x,
           selectedShape.y,
           color,
-          selectedShape.radius
+          (selectedShape as Circle).radius
         );
 
         updateShape({ id: file.id, shape });

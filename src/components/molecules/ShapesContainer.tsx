@@ -20,7 +20,7 @@ export default function ShapesContainer() {
         <span className="font-latoBold text-[0.9em]">Shapes</span>
       </div>
 
-      <div className="overflow-y-auto h-full">
+      <div className="overflow-y-auto h-shape-container">
         {
           currentFile?.shapes.map((shape) => (
             <ShapeItem key={shape.id} shape={shape} />

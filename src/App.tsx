@@ -19,12 +19,14 @@ import Rectangle from "./entities/shapes/Rectangle";
 import CircleUI from "./components/atoms/Shapes/Circle";
 import Circle from "./entities/shapes/Circle";
 import { generateId } from "./common/utils";
+import ShapeFactory from "./entities/factories/ShapeFactory";
 
 function App() {
   const canvaRef = React.useRef<HTMLElement>(null);
 
   // Local state
   const [isDrawing, setIsDrawing] = useState(false);
+  const [newShapeId, setNewShapeId] = useState<number | null>(null);
 
   // Global state
   const { currentItem, currentShape } =
@@ -40,17 +42,7 @@ function App() {
 
   // Global actions
   const { setCurrentItem } = useActions<NavigationActions>("navigation");
-  const { addShape, updateShape, selectShape } = useActions<DrawingActions>("drawing");
-
-  // useEffect(() => {
-  //   if (!canvaRef.current) return;
-
-  //   canvaRef.current.addEventListener("click", handleMouseClick);
-
-  //   return () => {
-  //     canvaRef.current?.removeEventListener("click", handleMouseClick);
-  //   };
-  // }, [currentItem, currentShape, file]);
+  const { addShape, updateShape, selectShape, removeUndesirableShapes } = useActions<DrawingActions>("drawing");
 
   useEffect(() => {
     if (!canvaRef.current) return;
@@ -78,6 +70,8 @@ function App() {
 
   // Handlers
   const handleMouseDown = (event: any) => {
+    selectShape(null);
+
     if (!canvaRef.current) return;
 
     if (currentItem === NavigationsElement.SHAPE) {
@@ -96,8 +90,9 @@ function App() {
     if (!canvaRef.current || !selectedShape || !file) return;
 
     const canvaElement = canvaRef.current;
+    const shapeFactory = new ShapeFactory();
 
-    if (isDrawing) {
+    if (isDrawing && newShapeId === selectedShape.id) {
       const currentX =
         event.clientX - canvaElement.getBoundingClientRect().left;
       const currentY = event.clientY - canvaElement.getBoundingClientRect().top;
@@ -106,44 +101,23 @@ function App() {
       const h = currentY - selectedShape.y;
 
       // Update the shape
-      switch (selectedShape.type) {
-        case ShapeElement.RECTANGLE: {
-          const shape = new Rectangle(
-            selectedShape.id,
-            selectedShape.x,
-            selectedShape.y,
-            selectedShape.color,
-            w,
-            h
-          );
+      const updatedShape = shapeFactory.create(selectedShape.type, {
+        id: selectedShape.id,
+        x: selectedShape.x,
+        y: selectedShape.y,
+        color: selectedShape.color,
+        width: w,
+        height: h,
+        radius: w,
+      });
 
-          updateShape({ id: file.id, shape });
-
-          break;
-        }
-
-        case ShapeElement.CIRCLE: {
-          const shape = new Circle(
-            selectedShape.id,
-            selectedShape.x,
-            selectedShape.y,
-            selectedShape.color,
-            w
-          );
-
-          updateShape({ id: file.id, shape });
-
-          break;
-        }
-
-        default:
-          break;
-      }
+      updateShape({ id: file.id, shape: updatedShape });
     }
   };
 
   const handleMouseUp = () => {
     setCurrentItem({ item: NavigationsElement.CURSOR });
+    removeUndesirableShapes();
 
     setIsDrawing(false);
   };
@@ -164,45 +138,25 @@ function App() {
   };
 
   const handleDraw = (position: { x: number; y: number }) => {
-    if (!file) return;
+    if (!file || !currentShape) return;
 
     if (currentItem === NavigationsElement.SHAPE) {
+      const shapeFactory = new ShapeFactory();
+
       // Create a shape
-      switch (currentShape) {
-        case ShapeElement.RECTANGLE: {
-          const shape = new Rectangle(
-            generateId(),
-            position.x,
-            position.y,
-            "#D3D3D3",
-            0,
-            0
-          );
+      const shapeId = generateId();
+      const shape = shapeFactory.create(currentShape, {
+        id: shapeId,
+        x: position.x,
+        y: position.y,
+        color: "#D3D3D3",
+        width: 0,
+        height: 0,
+        radius: 0,
+      });
 
-          addShape({ id: file.id, shape });
-
-          console.log({ shape });
-
-          break;
-        }
-
-        case ShapeElement.CIRCLE: {
-          const shape = new Circle(
-            generateId(),
-            position.x,
-            position.y,
-            "#D3D3D3",
-            0
-          );
-
-          addShape({ id: file.id, shape });
-
-          break;
-        }
-
-        default:
-          break;
-      }
+      setNewShapeId(shapeId);
+      addShape({ id: file.id, shape });
     }
   };
 

@@ -17,7 +17,8 @@ module.exports = withMT({
 
       height: {
         all: "100vh",
-        base: "calc(100% - 48px)" 
+        base: "calc(100% - 48px)",
+        "shape-container": "calc(100% - 40px)"
       },
       colors: {
         primary: {
