@@ -183,7 +183,17 @@ function App() {
           scale={{ x: 1, y: 1 }}
           // onClick={handleDeselect}
         >
-          <Layer>{handleDisplayShapes()}</Layer>
+          <Layer>{handleDisplayShapes()}
+            <RegularPolygon 
+              x={200}
+              y={200}
+              sides={4}
+              radius={100}
+              radiusY={200}
+              fill="red"
+              draggable
+            />
+          </Layer>
         </Stage>
       </section>
     </Layout>

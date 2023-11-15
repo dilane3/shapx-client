@@ -64,6 +64,7 @@ export default class Rectangle extends Shape {
       x: this.x,
       y: this.y,
       color: this.color,
+      rotate: this.rotate,
       width: this.width,
       height: this.height
     }

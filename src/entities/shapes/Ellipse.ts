@@ -68,6 +68,7 @@ export default class Ellipse extends Circle {
       x: this.x,
       y: this.y,
       color: this.color,
+      rotate: this.rotate,
       radius: this.radius,
       radiusY: this.radiusY,
     };
