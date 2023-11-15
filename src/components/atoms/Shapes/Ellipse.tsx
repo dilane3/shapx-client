@@ -5,8 +5,7 @@ import EllipseEntity from "../../../entities/shapes/Ellipse";
 import { useActions, useOperations, useSignal } from "@dilane3/gx";
 import {
   NavigationState,
-  NavigationsElement,
-  ShapeElement,
+  NavigationsElement
 } from "../../../gx/signals/navigation/types";
 import {
   DrawingActions,
@@ -88,7 +87,7 @@ export default function EllipseUI({ shape }: Props) {
     updateShape({ id: file.id, shape: updatedShape });
   };
 
-  const handleTransformEnd = (e: Konva.KonvaEventObject<Event>) => {
+  const handleTransformEnd = (_: Konva.KonvaEventObject<Event>) => {
     if (!file || !shapeRef.current) return;
 
     // Get new scale values
@@ -101,6 +100,7 @@ export default function EllipseUI({ shape }: Props) {
     const radiusY = Math.round(node.radiusY() * scaleY);
     const width = Math.round(node.width() * scaleX);
     const height = Math.round(node.height() * scaleY);
+    const rotate = Math.round(node.rotation());
 
     // Get a factory
     const shapeFactory = new ShapeFactory();
@@ -110,6 +110,7 @@ export default function EllipseUI({ shape }: Props) {
       ...shape.properties(),
       x: Math.round(node.x()),
       y: Math.round(node.y()),
+      rotate,
       radius: radiusX,
       radiusY,
       width,
@@ -132,6 +133,7 @@ export default function EllipseUI({ shape }: Props) {
         y={shape.y}
         radiusX={shape.radius}
         radiusY={shape.radiusY}
+        rotation={shape.rotate}
         fill={shape.color}
         draggable={currentItem === NavigationsElement.CURSOR}
         onDragEnd={handleDragEnd}

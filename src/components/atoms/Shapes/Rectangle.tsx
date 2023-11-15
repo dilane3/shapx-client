@@ -12,7 +12,6 @@ import {
   DrawingOperations,
   DrawingState,
 } from "../../../gx/signals/drawing/types";
-import { Menu, MenuItem, MenuList } from "@material-tailwind/react";
 import ShapeFactory from "../../../entities/factories/ShapeFactory";
 
 type Props = {
@@ -93,6 +92,40 @@ export default function RectUI({ shape }: Props) {
     updateShape({ id: file.id, shape: updatedShape });
   }
 
+  const handleTransformEnd = (_: Konva.KonvaEventObject<Event>) => {
+    if (!file || !shapeRef.current) return;
+
+    // Get new scale values
+    const node = shapeRef.current;
+    const scaleX = node.scaleX();
+    const scaleY = node.scaleY();
+
+    // Get new properties
+    const width = Math.round(node.width() * scaleX);
+    const height = Math.round(node.height() * scaleY);
+    const rotate = Math.round(node.rotation());
+
+    // Get a factory
+    const shapeFactory = new ShapeFactory();
+
+    // Create a new shape with new position
+    const updatedShape = shapeFactory.create(shape.type, {
+      ...shape.properties(),
+      x: Math.round(node.x()),
+      y: Math.round(node.y()),
+      rotate,
+      width,
+      height,
+    });
+
+    // Update shape
+    updateShape({ id: file.id, shape: updatedShape });
+
+    // Reset scale
+    node.scaleX(1);
+    node.scaleY(1);
+  };
+
   return (
     <>
       <Rect
@@ -101,9 +134,11 @@ export default function RectUI({ shape }: Props) {
         y={shape.y}
         width={shape.width}
         height={shape.height}
+        rotation={shape.rotate}
         fill={shape.color}
         draggable={currentItem === NavigationsElement.CURSOR}
         onDragEnd={handleDragEnd}
+        onTransformEnd={handleTransformEnd}
       />
 
       {selectedShape?.id === shape.id && (

@@ -7,10 +7,11 @@ import {
 import { ShapeElement } from "../../gx/signals/navigation/types";
 import Circle from "../../entities/shapes/Circle";
 import Rectangle from "../../entities/shapes/Rectangle";
-import { useMemo, useState } from "react";
+import { ChangeEvent, useMemo, useState } from "react";
 import ColorPicker from "./ColorPicker";
 import Ellipse from "../../entities/shapes/Ellipse";
 import ShapeFactory from "../../entities/factories/ShapeFactory";
+import Icon from "../atoms/Icons/Icon";
 
 export default function PropertiesContainer() {
   // Local state
@@ -48,6 +49,24 @@ export default function PropertiesContainer() {
     updateShape({ id: file.id, shape });
   };
 
+  const handleChangeProperty = (e: ChangeEvent<HTMLInputElement>, property: string) => {
+    const value = e.target.value;
+    const numberValue = Number(value);
+
+    if (!selectedShape || !file) return;
+    if (isNaN(numberValue)) return;
+
+    // Get Factory
+    const shapeFactory = new ShapeFactory();
+
+    const shape = shapeFactory.create(selectedShape.type, {
+      ...selectedShape.properties(),
+      [property]: numberValue,
+    });
+
+    updateShape({ id: file.id, shape });
+  }
+
   return (
     <aside className="w-[15rem] h-full border-l-[1px] border-gray">
       {selectedShape && (
@@ -62,91 +81,138 @@ export default function PropertiesContainer() {
             <span className="text-[0.7rem] font-latoBold ml-2">Properties</span>
 
             <div className="flex items-center">
-              <div className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default" title="Position X">
+              <div
+                className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default"
+                title="Position X"
+              >
                 <span className="font-latoRegular text-[0.7em] text-blue-gray-300">
                   X
                 </span>
                 <input
-                  className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] pb-1 ml-2 hover:cursor-default"
+                  className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] ml-2 hover:cursor-default"
                   value={selectedShape.x}
+                  onChange={(e) => handleChangeProperty(e, "x")}
                 />
               </div>
 
-              <div className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default" title="Position Y">
+              <div
+                className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default"
+                title="Position Y"
+              >
                 <span className="font-latoRegular text-[0.7em] text-blue-gray-300">
                   Y
                 </span>
                 <input
-                  className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] pb-1 ml-2 hover:cursor-default"
+                  className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] ml-2 hover:cursor-default"
                   value={selectedShape.y}
+                  onChange={(e) => handleChangeProperty(e, "y")}
                 />
               </div>
             </div>
 
             {selectedShape.type === ShapeElement.RECTANGLE ? (
               <div className="flex items-center">
-                <div className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default" title="Width">
+                <div
+                  className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default"
+                  title="Width"
+                >
                   <span className="font-latoRegular text-[0.7em] text-blue-gray-300">
                     W
                   </span>
                   <input
-                    className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] pb-1 ml-2 hover:cursor-default"
+                    className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] ml-2 hover:cursor-default"
                     value={(selectedShape as Rectangle).width}
+                    onChange={(e) => handleChangeProperty(e, "width")}
                   />
                 </div>
 
-                <div className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default" title="Height">
+                <div
+                  className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default"
+                  title="Height"
+                >
                   <span className="font-latoRegular text-[0.7em] text-blue-gray-300">
                     H
                   </span>
                   <input
-                    className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] pb-1 ml-2 hover:cursor-default"
+                    className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] ml-2 hover:cursor-default"
                     value={(selectedShape as Rectangle).height}
+                    onChange={(e) => handleChangeProperty(e, "height")}
                   />
                 </div>
               </div>
             ) : selectedShape.type === ShapeElement.CIRCLE ? (
               <div className="flex items-center">
-                <div className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default" title="Radius">
+                <div
+                  className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default"
+                  title="Radius"
+                >
                   <span className="font-latoRegular text-[0.7em] text-blue-gray-300">
                     R
                   </span>
                   <input
-                    className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] pb-1 ml-2 hover:cursor-default"
+                    className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] ml-2 hover:cursor-default"
                     value={(selectedShape as Circle).radius}
+                    onChange={(e) => handleChangeProperty(e, "radius")}
                   />
                 </div>
               </div>
             ) : selectedShape.type === ShapeElement.ELLIPSE ? (
               <div className="flex items-center">
-                <div className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default" title="Radius X">
+                <div
+                  className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default"
+                  title="Radius X"
+                >
                   <span className="font-latoRegular text-[0.7em] text-blue-gray-300">
                     RX
                   </span>
                   <input
-                    className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] pb-1 ml-2 hover:cursor-default"
+                    className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] ml-2 hover:cursor-default"
                     value={(selectedShape as Ellipse).radius}
+                    onChange={(e) => handleChangeProperty(e, "radius")}
                   />
                 </div>
 
-                <div className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default" title="Radius Y">
+                <div
+                  className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default"
+                  title="Radius Y"
+                >
                   <span className="font-latoRegular text-[0.7em] text-blue-gray-300">
                     RY
                   </span>
                   <input
-                    className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] pb-1 ml-2 hover:cursor-default"
+                    className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] ml-2 hover:cursor-default"
                     value={(selectedShape as Ellipse).radiusY}
+                    onChange={(e) => handleChangeProperty(e, "radiusY")}
                   />
                 </div>
               </div>
             ) : null}
+
+            <div className="flex items-center">
+              <div
+                className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default"
+                title="Rotate"
+              >
+                <span className="font-latoRegular text-[0.7em] text-blue-gray-300">
+                  <Icon name="arrow-clockwise" size={14} />
+                </span>
+                <input
+                  className="w-full h-8 border-0 px-2 bg-transparent outline-0 font-latoRegular text-[0.7em] ml-2 hover:cursor-default"
+                  value={selectedShape.rotate}
+                  onChange={(e) => handleChangeProperty(e, "rotate")}
+                />
+              </div>
+            </div>
           </div>
 
           <div className="px-4 h-auto w-full border-b-[1px] border-gray flex flex-col gap-2 py-2">
             <span className="text-[0.7rem] font-latoBold ml-2">Formula</span>
 
             <div className="flex items-center">
-              <div className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default" title="Perimeter">
+              <div
+                className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default"
+                title="Perimeter"
+              >
                 <span className="font-latoRegular text-[0.7em] text-blue-gray-300">
                   P
                 </span>
@@ -157,7 +223,10 @@ export default function PropertiesContainer() {
                 />
               </div>
 
-              <div className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default" title="Area">
+              <div
+                className="w-[50%] flex items-center px-2 border-[1px] border-transparent hover:border-gray hover:cursor-default"
+                title="Area"
+              >
                 <span className="font-latoRegular text-[0.7em] text-blue-gray-300">
                   A
                 </span>
