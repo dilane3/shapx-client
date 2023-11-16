@@ -41,7 +41,7 @@ export default function Main({ children }: ReactPropsChildren) {
   }
 
   return (
-    <section ref={mainRef} className="bg-tertiary w-main h-full flex items-center justify-center p-4">
+    <section ref={mainRef} className="bg-tertiary w-main h-full flex items-center justify-center">
       {children}
     </section>
   );

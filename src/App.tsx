@@ -193,15 +193,19 @@ function App() {
     link.click();
   };
 
+  const handleDeselect = () => {
+    selectShape(null);
+  }
+
   return (
     <Layout>
-      <Button className="bg-primary" onClick={handleExportToImage}>Export</Button>
-      <div className="w-full h-full bg-whitte overflow-auto">
+      <div className="w-full h-full overflow-auto px-4 flex items-center">
         <section
           ref={canvaRef}
           style={{
             width: window.innerWidth,
-            height: window.innerHeight,
+            height: window.innerHeight - 80,
+            // transform: "scale(0.3)",
           }}
         >
           <Stage
@@ -209,8 +213,6 @@ function App() {
             ref={stageRef}
             width={window.innerWidth}
             height={window.innerHeight}
-            scale={{ x: 1, y: 1 }}
-            style={{ backgroundColor: "#FFF" }}
             className="w-full h-full"
           >
             <Layer>
@@ -220,6 +222,7 @@ function App() {
                 width={window.innerWidth}
                 height={window.innerHeight}
                 fill="#FFF"
+                onClick={handleDeselect}
               />
               {handleDisplayShapes()}
             </Layer>
