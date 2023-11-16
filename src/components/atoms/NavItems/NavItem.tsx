@@ -79,7 +79,7 @@ export default function NavItem({
         >
           <MenuHandler>
             <div
-              className="h-full flex flex-row items-center justify-center"
+              className={twMerge("h-full flex flex-row items-center justify-center")}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             >
@@ -93,9 +93,9 @@ export default function NavItem({
               />
             </div>
           </MenuHandler>
-          <MenuList className="bg-secondary w-[14rem] border-0 border-t-[1px] border-gray rounded-none shadow-md shadow-tertiary mt-2 px-0">
+          <MenuList className="bg-secondary w-[14rem] border-0 border-t-[1px] border-gray rounded-none shadow-md shadow-tertiary mt-2 px-0 py-1">
             <MenuItem
-              className="text-white font-latoRegular rounded-none px-8 hover:bg-primary-200"
+              className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
               onClick={() => handleChangeShape(ShapeElement.RECTANGLE)}
             >
               <div className="w-full flex flex-row items-center">
@@ -104,7 +104,7 @@ export default function NavItem({
               </div>
             </MenuItem>
             <MenuItem
-              className="text-white font-latoRegular rounded-none px-8 hover:bg-primary-200"
+              className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
               onClick={() => handleChangeShape(ShapeElement.ELLIPSE)}
             >
               <div className="w-full flex flex-row items-center">
@@ -113,7 +113,7 @@ export default function NavItem({
               </div>
             </MenuItem>
             <MenuItem
-              className="text-white font-latoRegular rounded-none px-8 hover:bg-primary-200"
+              className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
               onClick={() => handleChangeShape(ShapeElement.DIAMOND)}
             >
               <div className="w-full flex flex-row items-center">
@@ -122,7 +122,7 @@ export default function NavItem({
               </div>
             </MenuItem>
             <MenuItem
-              className="text-white font-latoRegular rounded-none px-8 hover:bg-primary-200"
+              className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
               onClick={() => handleChangeShape(ShapeElement.POLYGON)}
             >
               <div className="w-full flex flex-row items-center">

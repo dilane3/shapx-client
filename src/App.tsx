@@ -195,34 +195,37 @@ function App() {
 
   return (
     <Layout>
-      <section
-        ref={canvaRef}
-        className="w-full h-full bg-whitte overflow-hidden"
-      >
-        <Button className="bg-primary" onClick={handleExportToImage}>
-          Export
-        </Button>
-        <Stage
-          id="canva"
-          ref={stageRef}
-          width={canvaRef.current?.clientWidth}
-          height={canvaRef.current?.clientHeight}
-          scale={{ x: 1, y: 1 }}
-          style={{ backgroundColor: "#FFF" }}
-          className="w-full h-full"
+      <Button className="bg-primary" onClick={handleExportToImage}>Export</Button>
+      <div className="w-full h-full bg-whitte overflow-auto">
+        <section
+          ref={canvaRef}
+          style={{
+            width: window.innerWidth,
+            height: window.innerHeight,
+          }}
         >
-          <Layer>
-            <Rect
-              x={0}
-              y={0}
-              width={canvaRef.current?.clientWidth}
-              height={canvaRef.current?.clientHeight}
-              fill="#FFF"
-            />
-            {handleDisplayShapes()}
-          </Layer>
-        </Stage>
-      </section>
+          <Stage
+            id="canva"
+            ref={stageRef}
+            width={window.innerWidth}
+            height={window.innerHeight}
+            scale={{ x: 1, y: 1 }}
+            style={{ backgroundColor: "#FFF" }}
+            className="w-full h-full"
+          >
+            <Layer>
+              <Rect
+                x={0}
+                y={0}
+                width={window.innerWidth}
+                height={window.innerHeight}
+                fill="#FFF"
+              />
+              {handleDisplayShapes()}
+            </Layer>
+          </Stage>
+        </section>
+      </div>
     </Layout>
   );
 }
