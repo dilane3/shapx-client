@@ -1,4 +1,4 @@
-import { useSignal } from "@dilane3/gx";
+import { useActions, useSignal } from "@dilane3/gx";
 import NavItem from "../atoms/NavItems/NavItem";
 import {
   NavigationState,
@@ -7,21 +7,30 @@ import {
 } from "../../gx/signals/navigation/types";
 import Icon from "../atoms/Icons/Icon";
 import { twMerge } from "tailwind-merge";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Menu,
   MenuHandler,
   MenuItem,
   MenuList,
 } from "@material-tailwind/react";
+import { ExportContext, ExportFiles, ExportFilesType } from "../../contexts/export";
+import { sleep } from "../../common/utils";
+import { DrawingActions } from "../../gx/signals/drawing/types";
 
 export default function Navbar() {
+  // Context
+  const { exportTo } = useContext(ExportContext);
+
   // Local state
   const [isHovered, setIsHovered] = useState(false);
 
   // Global state
   const { currentItem, currentShape } =
     useSignal<NavigationState>("navigation");
+
+  // Global actions
+  const { selectShape } = useActions<DrawingActions>('drawing');
 
   // Handlers
   const handleGetShapeIcon = () => {
@@ -40,6 +49,14 @@ export default function Navbar() {
         return "square";
     }
   };
+
+  const handleExportTo = async (target: ExportFilesType) => {
+    selectShape(null);
+
+    await sleep(2000);
+
+    exportTo(target);
+  }
 
   return (
     <header className="w-full h-12 bg-secondary flex justify-start items-center border-b-[1px] border-gray">
@@ -117,9 +134,24 @@ export default function Navbar() {
               </MenuHandler>
 
               <MenuList className="bg-secondary w-[14rem] border-0 border-t-[1px] border-gray rounded-none shadow-md shadow-tertiary mt-2 ml-4 px-0 py-1">
-                <MenuItem className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200">To SHAPX</MenuItem>
-                <MenuItem className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200">To PNG</MenuItem>
-                <MenuItem className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200">To JPG</MenuItem>
+                <MenuItem
+                  className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
+                  onClick={() => handleExportTo(ExportFiles.SHAPX)}
+                >
+                  To SHAPX
+                </MenuItem>
+                <MenuItem
+                  className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
+                  onClick={() => handleExportTo(ExportFiles.PNG)}
+                >
+                  To PNG
+                </MenuItem>
+                <MenuItem
+                  className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
+                  onClick={() => handleExportTo(ExportFiles.JPG)}
+                >
+                  To JPG
+                </MenuItem>
               </MenuList>
             </Menu>
           </MenuItem>

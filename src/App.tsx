@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Stage, Layer, Rect } from "react-konva";
 import React from "react";
 import Layout from "./components/layouts/Layout";
@@ -22,14 +22,16 @@ import { generateId } from "./common/utils";
 import RectUI from "./components/atoms/Shapes/Rectangle";
 import EllipseUI from "./components/atoms/Shapes/Ellipse";
 import HexagonUI from "./components/atoms/Shapes/Hexagon";
-import { Button } from "@material-tailwind/react";
-import Konva from "konva";
 import Diamond from "./entities/shapes/Diamond";
 import DiamondUI from "./components/atoms/Shapes/Diamond";
+import { ExportContext } from "./contexts/export";
 
 function App() {
+  // Context
+  const { ref: stageRef } = useContext(ExportContext);
+
+  // Reference
   const canvaRef = React.useRef<HTMLElement>(null);
-  const stageRef = React.useRef<Konva.Stage>(null);
 
   // Local state
   const [isDrawing, setIsDrawing] = useState(false);
@@ -174,23 +176,6 @@ function App() {
       setNewShapeId(shapeId);
       addShape({ id: file.id, shape });
     }
-  };
-
-  const handleExportToImage = () => {
-    if (!stageRef.current) return;
-
-    const canvaElement = stageRef.current;
-
-    const dataURL = canvaElement.toDataURL({
-      mimeType: "image/png",
-      quality: 1,
-      pixelRatio: 1,
-    });
-
-    const link = document.createElement("a");
-    link.download = "image.png";
-    link.href = dataURL;
-    link.click();
   };
 
   const handleDeselect = () => {

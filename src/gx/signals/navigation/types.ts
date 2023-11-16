@@ -1,7 +1,7 @@
 export const NavigationsElement = {
   CURSOR: "cursor",
   SHAPE: "shape",
-};
+} as const;
 
 export type NavigationsElementType =
   (typeof NavigationsElement)[keyof typeof NavigationsElement];
@@ -12,7 +12,7 @@ export const ShapeElement = {
   ELLIPSE: "ellipse",
   POLYGON: "polygon",
   DIAMOND: "diamond",
-};
+} as const;
 
 export type ShapeElementType = (typeof ShapeElement)[keyof typeof ShapeElement];
 
