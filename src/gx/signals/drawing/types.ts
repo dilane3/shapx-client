@@ -5,6 +5,7 @@ export type DrawingState = {
   files: Array<File>,
   loading: boolean,
   current: File | null,
+  openedFiles: Array<File>,
   selectedShapeId: number | null
 };
 
@@ -14,6 +15,8 @@ export type DrawingActions = {
   createFile: (file: File) => void,
 
   renameFile: (payload: { id: number; name: string }) => void,
+
+  selectFile: (file: File) => void;
 
   addShape: (payload: { id: number, shape: Shape }) => void,
 

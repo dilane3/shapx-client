@@ -33,7 +33,7 @@ export default function HexagonUI({ shape }: Props) {
   // Global state
   const {
     current: file,
-    files,
+    openedFiles,
     selectedShapeId,
   } = useSignal<DrawingState>("drawing");
 
@@ -42,7 +42,7 @@ export default function HexagonUI({ shape }: Props) {
 
   const selectedShape = useMemo(() => {
     return getSelectedShape();
-  }, [selectedShapeId, JSON.stringify(files)]);
+  }, [selectedShapeId, JSON.stringify(openedFiles)]);
 
   // Effects
   useEffect(() => {

@@ -5,14 +5,14 @@ import { useMemo } from "react";
 
 export default function ShapesContainer() {
   // Global state
-  const { files } = useSignal<DrawingState>("drawing");
+  const { openedFiles, current: file } = useSignal<DrawingState>("drawing");
 
   // Operations
   const { getCurrentFile } = useOperations<DrawingOperations>("drawing");
 
   const currentFile = useMemo(() => {
     return getCurrentFile();
-  }, [JSON.stringify(files)]);
+  }, [JSON.stringify(openedFiles), file]);
 
   return (
     <aside className="w-[15rem] h-full border-r-[1px] border-gray">

@@ -1,6 +1,6 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
 /* Load fonts */
 
@@ -43,10 +43,25 @@
   -webkit-text-size-adjust: 100%;
 }
 
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
   overflow: hidden;
+
+  scrollbar-color: #D3D3D3 transparent; /* thumb and track color */
+  scrollbar-width: thin;
+}
+
+/* For WebKit (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #D3D3D3; /* Change this to your desired thumb color */
+  border-radius: 6px;
 }

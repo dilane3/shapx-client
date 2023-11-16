@@ -20,8 +20,9 @@ import {
   ExportFilesType,
 } from "../../contexts/export";
 import { sleep } from "../../common/utils";
-import { DrawingActions } from "../../gx/signals/drawing/types";
+import { DrawingActions, DrawingState } from "../../gx/signals/drawing/types";
 import FileEntity from "../../entities/file/File";
+import TabItem from "../atoms/Tabs/Tab";
 
 export default function Navbar() {
   // Reference
@@ -36,6 +37,7 @@ export default function Navbar() {
   // Global state
   const { currentItem, currentShape } =
     useSignal<NavigationState>("navigation");
+  const { openedFiles } = useSignal<DrawingState>("drawing");
 
   // Global actions
   const { selectShape, createFile } = useActions<DrawingActions>("drawing");
@@ -74,7 +76,7 @@ export default function Navbar() {
       if (!e.target) return;
 
       const fileContent = e.target.result as string;
-      
+
       const loadedFile = FileEntity.loadShapxData(fileContent);
 
       createFile(loadedFile);
@@ -226,6 +228,12 @@ export default function Navbar() {
           active={currentItem === NavigationsElement.SHAPE}
           value={NavigationsElement.SHAPE}
         />
+      </div>
+
+      <div className="h-full w-full ml-8 flex flex-row flex-nowrap items-end overflow-auto">
+        {openedFiles.map((file) => (
+          <TabItem key={file.id} file={file} />
+        ))}
       </div>
     </header>
   );
