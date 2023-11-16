@@ -151,7 +151,7 @@ export default function Navbar() {
         </MenuHandler>
         <MenuList className="bg-secondary w-[14rem] border-0 border-t-[1px] border-gray rounded-none shadow-md shadow-tertiary mt-2 ml-2 px-0 py-1">
           <MenuItem
-            className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
+            className="text-white font-latoRegular rounded-none px-4"
             onClick={handleCreateNewFile}
           >
             <div className="w-full flex flex-row items-center">
@@ -163,7 +163,7 @@ export default function Navbar() {
           <hr className="my-1 border-gray" />
 
           <MenuItem
-            className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
+            className="text-white font-latoRegular rounded-none px-4"
             onClick={() => {}}
           >
             <div className="w-full flex flex-row items-center">
@@ -173,7 +173,7 @@ export default function Navbar() {
           </MenuItem>
 
           <MenuItem
-            className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
+            className="text-white font-latoRegular rounded-none px-4"
             onClick={handleOpenFileExplorer}
           >
             <div className="w-full flex flex-row items-center">
@@ -182,42 +182,45 @@ export default function Navbar() {
             </div>
           </MenuItem>
 
-          <hr className="my-1 border-gray" />
+          {file && (
+            <>
+              <hr className="my-1 border-gray" />
+              <MenuItem
+                className="text-white font-latoRegular rounded-none px-4"
+                onClick={() => {}}
+              >
+                <Menu placement="right-start" allowHover>
+                  <MenuHandler>
+                    <div className="w-full flex flex-row items-center">
+                      {/* <Icon name="square" size={16} /> */}
+                      <span className="ml-4">Export As ...</span>
+                    </div>
+                  </MenuHandler>
 
-          <MenuItem
-            className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
-            onClick={() => {}}
-          >
-            <Menu placement="right-start" allowHover>
-              <MenuHandler>
-                <div className="w-full flex flex-row items-center">
-                  {/* <Icon name="square" size={16} /> */}
-                  <span className="ml-4">Export As ...</span>
-                </div>
-              </MenuHandler>
-
-              <MenuList className="bg-secondary w-[14rem] border-0 border-t-[1px] border-gray rounded-none shadow-md shadow-tertiary mt-2 ml-4 px-0 py-1">
-                <MenuItem
-                  className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
-                  onClick={() => handleExportTo(ExportFiles.SHAPX)}
-                >
-                  To SHAPX
-                </MenuItem>
-                <MenuItem
-                  className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
-                  onClick={() => handleExportTo(ExportFiles.PNG)}
-                >
-                  To PNG
-                </MenuItem>
-                <MenuItem
-                  className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
-                  onClick={() => handleExportTo(ExportFiles.JPG)}
-                >
-                  To JPG
-                </MenuItem>
-              </MenuList>
-            </Menu>
-          </MenuItem>
+                  <MenuList className="bg-secondary w-[14rem] border-0 border-t-[1px] border-gray rounded-none shadow-md shadow-tertiary mt-2 ml-4 px-0 py-1">
+                    <MenuItem
+                      className="text-white font-latoRegular rounded-none px-4"
+                      onClick={() => handleExportTo(ExportFiles.SHAPX)}
+                    >
+                      To SHAPX
+                    </MenuItem>
+                    <MenuItem
+                      className="text-white font-latoRegular rounded-none px-4"
+                      onClick={() => handleExportTo(ExportFiles.PNG)}
+                    >
+                      To PNG
+                    </MenuItem>
+                    <MenuItem
+                      className="text-white font-latoRegular rounded-none px-4"
+                      onClick={() => handleExportTo(ExportFiles.JPG)}
+                    >
+                      To JPG
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              </MenuItem>
+            </>
+          )}
         </MenuList>
       </Menu>
 
@@ -238,7 +241,7 @@ export default function Navbar() {
         </div>
       )}
 
-      <div className="h-full w-full ml-8 flex flex-row flex-nowrap items-end overflow-auto mt-[1px]">
+      <div className="h-full w-full ml-10 flex flex-row flex-nowrap items-end overflow-auto mt-[1px]">
         {openedFiles.map((file) => (
           <TabItem key={file.id} file={file} />
         ))}
