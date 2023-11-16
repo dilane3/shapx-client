@@ -6,13 +6,18 @@ import {
   ExportFilesType,
 } from "../contexts/export";
 import Konva from "konva";
+import { useSignal } from "@dilane3/gx";
+import { DrawingState } from "../gx/signals/drawing/types";
 
 export default function ExportProvider({ children }: ReactPropsChildren) {
   const ref = useRef<Konva.Stage>(null);
 
+  // Global state
+  const { current: file } = useSignal<DrawingState>("drawing");
+
   // Handlers
   const handleExport = (target: ExportFilesType) => {
-    if (!ref.current) return;
+    if (!ref.current || !file) return;
 
     const canvaElement = ref.current;
 
@@ -29,7 +34,28 @@ export default function ExportProvider({ children }: ReactPropsChildren) {
       link.href = dataURL;
       link.click();
     } else {
-      // TODO: implement the export feature for shapx file
+      // Get encrypted data
+      const data = file.exportToShapx();
+      const filename = file.name.replace(" ", "-").toLowerCase() + ".shapx";
+
+      // Convert the data to a Blob
+      const blob = new Blob([data], { type: "text/plain" });
+
+      // Create a download link
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+
+      // Set the filename
+      link.download = filename;
+
+      // Append the link to the document
+      document.body.appendChild(link);
+
+      // Trigger the click event to download the file
+      link.click();
+
+      // Remove the link from the document
+      document.body.removeChild(link);
     }
   };
 

@@ -1,7 +1,8 @@
+import { generateId } from "../../common/utils";
 import { ShapeElement } from "../../gx/signals/navigation/types";
 import IFile from "../abstraction/File";
 import Shape from "../abstraction/Shape";
-import Circle from "../shapes/Circle";
+import ShapeFactory from "../factories/ShapeFactory";
 import Diamond from "../shapes/Diamond";
 import Ellipse from "../shapes/Ellipse";
 import Hexagon from "../shapes/Hexagon";
@@ -15,10 +16,10 @@ export default class File implements IFile {
   private _name: string;
   private _shapes: Array<Shape>;
 
-  constructor(id: number, name: string) {
+  constructor(id: number, name: string, shapes: Array<Shape> = []) {
     this._id = id;
     this._name = name;
-    this._shapes = [];
+    this._shapes = shapes;
   }
 
   // Getters
@@ -76,7 +77,9 @@ export default class File implements IFile {
     this._shapes = this._shapes.filter((shape) => {
       switch (shape.type) {
         case ShapeElement.ELLIPSE: {
-          return (shape as Ellipse).radius > 0 && (shape as Ellipse).radiusY > 0;
+          return (
+            (shape as Ellipse).radius > 0 && (shape as Ellipse).radiusY > 0
+          );
         }
 
         case ShapeElement.RECTANGLE: {
@@ -98,5 +101,70 @@ export default class File implements IFile {
         }
       }
     });
+  }
+
+  // export to SHAPX file
+  exportToShapx() {
+    const shapes: Array<{ [key: string]: any }> = [];
+
+    this.shapes.forEach((shape) => {
+      shapes.push(shape.properties());
+    });
+
+    const fileToExport = {
+      id: this.id,
+      name: this.name,
+      shapes,
+    };
+
+    // Convert to string
+    const data = JSON.stringify(fileToExport);
+
+    // Convert to base64 data
+    const base64 = btoa(data);
+
+    // Get encrypted data
+    const encryptedData = `
+      This is a SHAPX data file which contains information about your drawing shapes.
+      ==============================================================================
+
+      Date of creation: ${new Date(Date.now()).toDateString()}
+      Name of file: ${this.name.replace(" ", "-")}.shapx
+
+      ==============================================================================
+      Data: <<<${base64}>>>
+    `;
+
+    return encryptedData;
+  }
+
+  static loadShapxData(data: string) {
+    // Get the base64 data
+    const base64 = data
+      .split("Data: <<<")[1]
+      .replace(">>>", "")
+      .replace("\n", "")
+      .trim();
+
+    // Convert base64 to string
+    const stringData = atob(base64);
+
+    // Parse data
+    const parsedData = JSON.parse(stringData);
+
+    // Construct shapes
+    const shapes: Array<Shape> = [];
+    const shapeFactory = new ShapeFactory();
+
+    parsedData.shapes.forEach((shp: any) => {
+      const shape = shapeFactory.create(shp.type, shp);
+
+      shapes.push(shape);
+    });
+
+    // Create a new file
+    const file = new File(generateId(), parsedData.name, shapes);
+
+    return file;
   }
 }
