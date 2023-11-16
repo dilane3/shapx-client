@@ -30,7 +30,7 @@ export default function ExportProvider({ children }: ReactPropsChildren) {
 
       const link = document.createElement("a");
 
-      link.download = "image.png";
+      link.download = file.name.replace(" ", "-").toLowerCase();
       link.href = dataURL;
       link.click();
     } else {

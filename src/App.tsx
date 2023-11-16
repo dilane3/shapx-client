@@ -25,6 +25,7 @@ import HexagonUI from "./components/atoms/Shapes/Hexagon";
 import Diamond from "./entities/shapes/Diamond";
 import DiamondUI from "./components/atoms/Shapes/Diamond";
 import { ExportContext } from "./contexts/export";
+import File from "./entities/file/File";
 
 function App() {
   // Context
@@ -32,6 +33,7 @@ function App() {
 
   // Reference
   const canvaRef = React.useRef<HTMLElement>(null);
+  const drawingContainerRef = React.useRef<HTMLDivElement>(null);
 
   // Local state
   const [isDrawing, setIsDrawing] = useState(false);
@@ -77,6 +79,33 @@ function App() {
       canvaElement.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isDrawing, selectedShape, currentItem, currentShape]);
+
+  useEffect(() => {
+    if (!drawingContainerRef.current) return;
+
+    // Get viewport dimensions
+    const viewportHeight = drawingContainerRef.current.clientHeight;
+    const viewportWidth = drawingContainerRef.current.clientWidth;
+
+    const elementRect = drawingContainerRef.current.getBoundingClientRect()
+
+    console.log({
+      elementRect,
+      File,
+      viewportHeight,
+      viewportWidth
+    })
+
+    // Calculate the vertical center position
+    const centerY = elementRect.top + File.FILE_HEIGHT / 2 - viewportHeight / 2;
+    const centerX = elementRect.left + File.FILE_WIDTH / 2 - viewportWidth / 2;
+
+    // Scroll to the middle of x and y
+    drawingContainerRef.current.scrollTo({
+      top: centerY,
+      left: centerX,
+    });
+  }, []);
 
   // Handlers
   const handleMouseDown = (event: any) => {
@@ -143,7 +172,7 @@ function App() {
         case ShapeElement.ELLIPSE:
           return <EllipseUI key={shape.id} shape={shape as Ellipse} />;
 
-        case ShapeElement.DIAMOND: 
+        case ShapeElement.DIAMOND:
           return <DiamondUI key={shape.id} shape={shape as Diamond} />;
 
         default:
@@ -180,32 +209,34 @@ function App() {
 
   const handleDeselect = () => {
     selectShape(null);
-  }
+  };
 
   return (
     <Layout>
-      <div className="w-full h-full overflow-auto px-4 flex items-center">
+      <div
+        ref={drawingContainerRef}
+        className="w-full h-full overflow-auto px-4 py-4 flex"
+      >
         <section
           ref={canvaRef}
           style={{
-            width: window.innerWidth,
-            height: window.innerHeight - 80,
-            // transform: "scale(0.3)",
+            width: File.FILE_WIDTH,
+            height: File.FILE_HEIGHT,
           }}
+          className="bg-white"
         >
           <Stage
             id="canva"
             ref={stageRef}
-            width={window.innerWidth}
-            height={window.innerHeight}
-            className="w-full h-full"
+            width={File.FILE_WIDTH}
+            height={File.FILE_HEIGHT}
           >
             <Layer>
               <Rect
                 x={0}
                 y={0}
-                width={window.innerWidth}
-                height={window.innerHeight}
+                width={canvaRef.current?.offsetWidth}
+                height={canvaRef.current?.offsetHeight}
                 fill="#FFF"
                 onClick={handleDeselect}
               />

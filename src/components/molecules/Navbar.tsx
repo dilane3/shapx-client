@@ -7,18 +7,26 @@ import {
 } from "../../gx/signals/navigation/types";
 import Icon from "../atoms/Icons/Icon";
 import { twMerge } from "tailwind-merge";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import {
   Menu,
   MenuHandler,
   MenuItem,
   MenuList,
 } from "@material-tailwind/react";
-import { ExportContext, ExportFiles, ExportFilesType } from "../../contexts/export";
+import {
+  ExportContext,
+  ExportFiles,
+  ExportFilesType,
+} from "../../contexts/export";
 import { sleep } from "../../common/utils";
 import { DrawingActions } from "../../gx/signals/drawing/types";
+import FileEntity from "../../entities/file/File";
 
 export default function Navbar() {
+  // Reference
+  const inputRef = useRef<HTMLInputElement>(null);
+
   // Context
   const { exportTo } = useContext(ExportContext);
 
@@ -30,7 +38,7 @@ export default function Navbar() {
     useSignal<NavigationState>("navigation");
 
   // Global actions
-  const { selectShape } = useActions<DrawingActions>('drawing');
+  const { selectShape, createFile } = useActions<DrawingActions>("drawing");
 
   // Handlers
   const handleGetShapeIcon = () => {
@@ -56,7 +64,46 @@ export default function Navbar() {
     await sleep(2000);
 
     exportTo(target);
-  }
+  };
+
+  const handleLoadShapxFile = (file: File) => {
+    // Read content
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+      if (!e.target) return;
+
+      const fileContent = e.target.result as string;
+      
+      const loadedFile = FileEntity.loadShapxData(fileContent);
+
+      createFile(loadedFile);
+    };
+
+    // Read the file as text
+    reader.readAsText(file);
+  };
+
+  const handleChangeFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
+    if (e.target.files) {
+      const file = e.target.files[0];
+
+      const extension = file.name.split(".")[1];
+
+      if (extension.toLowerCase() !== "shapx")
+        throw new Error("Only SHAPX files are supported");
+
+      handleLoadShapxFile(file);
+    }
+  };
+
+  const handleOpenFileExplorer = () => {
+    if (!inputRef.current) return;
+
+    inputRef.current.click();
+  };
 
   return (
     <header className="w-full h-12 bg-secondary flex justify-start items-center border-b-[1px] border-gray">
@@ -84,6 +131,14 @@ export default function Navbar() {
                 )}
               />
             </div>
+
+            <input
+              ref={inputRef}
+              type="file"
+              hidden
+              onChange={handleChangeFile}
+              accept=".shapx"
+            />
           </div>
         </MenuHandler>
         <MenuList className="bg-secondary w-[14rem] border-0 border-t-[1px] border-gray rounded-none shadow-md shadow-tertiary mt-2 ml-2 px-0 py-1">
@@ -111,7 +166,7 @@ export default function Navbar() {
 
           <MenuItem
             className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
-            onClick={() => {}}
+            onClick={handleOpenFileExplorer}
           >
             <div className="w-full flex flex-row items-center">
               {/* <Icon name="square" size={16} /> */}

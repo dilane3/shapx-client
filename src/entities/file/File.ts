@@ -16,6 +16,9 @@ export default class File implements IFile {
   private _name: string;
   private _shapes: Array<Shape>;
 
+  static FILE_WIDTH = 2000;
+  static FILE_HEIGHT = 1500;
+
   constructor(id: number, name: string, shapes: Array<Shape> = []) {
     this._id = id;
     this._name = name;
