@@ -19,7 +19,7 @@ import {
   ExportFiles,
   ExportFilesType,
 } from "../../contexts/export";
-import { sleep } from "../../common/utils";
+import { generateId, sleep } from "../../common/utils";
 import { DrawingActions, DrawingState } from "../../gx/signals/drawing/types";
 import FileEntity from "../../entities/file/File";
 import TabItem from "../atoms/Tabs/Tab";
@@ -37,7 +37,7 @@ export default function Navbar() {
   // Global state
   const { currentItem, currentShape } =
     useSignal<NavigationState>("navigation");
-  const { openedFiles } = useSignal<DrawingState>("drawing");
+  const { openedFiles, current: file } = useSignal<DrawingState>("drawing");
 
   // Global actions
   const { selectShape, createFile } = useActions<DrawingActions>("drawing");
@@ -107,6 +107,12 @@ export default function Navbar() {
     inputRef.current.click();
   };
 
+  const handleCreateNewFile = () => {
+    const file = new FileEntity(generateId(), "Untitled");
+
+    createFile(file);
+  };
+
   return (
     <header className="w-full h-12 bg-secondary flex justify-start items-center border-b-[1px] border-gray">
       <Menu
@@ -146,7 +152,7 @@ export default function Navbar() {
         <MenuList className="bg-secondary w-[14rem] border-0 border-t-[1px] border-gray rounded-none shadow-md shadow-tertiary mt-2 ml-2 px-0 py-1">
           <MenuItem
             className="text-white font-latoRegular rounded-none px-4 hover:bg-primary-200"
-            onClick={() => {}}
+            onClick={handleCreateNewFile}
           >
             <div className="w-full flex flex-row items-center">
               {/* <Icon name="square" size={16} /> */}
@@ -215,22 +221,24 @@ export default function Navbar() {
         </MenuList>
       </Menu>
 
-      <div className="flex flex-row">
-        <NavItem
-          icon="cursor"
-          active={currentItem === NavigationsElement.CURSOR}
-          value={NavigationsElement.CURSOR}
-        />
-        <NavItem
-          icon={handleGetShapeIcon()}
-          size={14}
-          hasDropdown
-          active={currentItem === NavigationsElement.SHAPE}
-          value={NavigationsElement.SHAPE}
-        />
-      </div>
+      {file && (
+        <div className="flex flex-row">
+          <NavItem
+            icon="cursor"
+            active={currentItem === NavigationsElement.CURSOR}
+            value={NavigationsElement.CURSOR}
+          />
+          <NavItem
+            icon={handleGetShapeIcon()}
+            size={14}
+            hasDropdown
+            active={currentItem === NavigationsElement.SHAPE}
+            value={NavigationsElement.SHAPE}
+          />
+        </div>
+      )}
 
-      <div className="h-full w-full ml-8 flex flex-row flex-nowrap items-end overflow-auto">
+      <div className="h-full w-full ml-8 flex flex-row flex-nowrap items-end overflow-auto mt-[1px]">
         {openedFiles.map((file) => (
           <TabItem key={file.id} file={file} />
         ))}

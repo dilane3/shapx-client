@@ -87,14 +87,7 @@ function App() {
     const viewportHeight = drawingContainerRef.current.clientHeight;
     const viewportWidth = drawingContainerRef.current.clientWidth;
 
-    const elementRect = drawingContainerRef.current.getBoundingClientRect()
-
-    console.log({
-      elementRect,
-      File,
-      viewportHeight,
-      viewportWidth
-    })
+    const elementRect = drawingContainerRef.current.getBoundingClientRect();
 
     // Calculate the vertical center position
     const centerY = elementRect.top + File.FILE_HEIGHT / 2 - viewportHeight / 2;
@@ -217,33 +210,35 @@ function App() {
         ref={drawingContainerRef}
         className="w-full h-full overflow-auto px-4 py-4 flex"
       >
-        <section
-          ref={canvaRef}
-          style={{
-            width: File.FILE_WIDTH,
-            height: File.FILE_HEIGHT,
-          }}
-          className="bg-white"
-        >
-          <Stage
-            id="canva"
-            ref={stageRef}
-            width={File.FILE_WIDTH}
-            height={File.FILE_HEIGHT}
+        {file && (
+          <section
+            ref={canvaRef}
+            style={{
+              width: File.FILE_WIDTH,
+              height: File.FILE_HEIGHT,
+            }}
+            className="bg-white"
           >
-            <Layer>
-              <Rect
-                x={0}
-                y={0}
-                width={canvaRef.current?.offsetWidth}
-                height={canvaRef.current?.offsetHeight}
-                fill="#FFF"
-                onClick={handleDeselect}
-              />
-              {handleDisplayShapes()}
-            </Layer>
-          </Stage>
-        </section>
+            <Stage
+              id="canva"
+              ref={stageRef}
+              width={File.FILE_WIDTH}
+              height={File.FILE_HEIGHT}
+            >
+              <Layer>
+                <Rect
+                  x={0}
+                  y={0}
+                  width={canvaRef.current?.offsetWidth}
+                  height={canvaRef.current?.offsetHeight}
+                  fill="#FFF"
+                  onClick={handleDeselect}
+                />
+                {handleDisplayShapes()}
+              </Layer>
+            </Stage>
+          </section>
+        )}
       </div>
     </Layout>
   );

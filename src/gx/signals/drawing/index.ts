@@ -2,18 +2,14 @@ import { createSignal } from "@dilane3/gx";
 import { DrawingState } from "./types";
 import File from "../../../entities/file/File";
 import Shape from "../../../entities/abstraction/Shape";
-import { generateId } from "../../../common/utils";
-
-const file = new File(generateId(), "My drawing");
-const file2 = new File(generateId(), "My drawing 2");
 
 export const drawingSignal = createSignal<DrawingState>({
   name: "drawing",
   state: {
-    files: [file],
+    files: [],
     loading: true,
-    current: file,
-    openedFiles: [file, file2],
+    current: null,
+    openedFiles: [],
     selectedShapeId: null
   },
   actions: {
@@ -27,6 +23,7 @@ export const drawingSignal = createSignal<DrawingState>({
     createFile: (state, file: File) => {
       state.current = file;
       state.openedFiles.push(file);
+      state.files.push(file);
 
       return state;
     },
@@ -37,6 +34,23 @@ export const drawingSignal = createSignal<DrawingState>({
 
       if (file) {
         file.name = payload.name;
+      }
+
+      return state;
+    },
+
+    removeFile: (state, payload: { id: number }) => { 
+      // Find the file by id
+      const index = state.openedFiles.findIndex(file => file.id === payload.id);
+
+      if (index !== -1) {
+        state.openedFiles.splice(index, 1);
+
+        if (state.openedFiles.length === 0) {
+          state.current = null;
+        } else {
+          state.current = state.openedFiles[state.openedFiles.length - 1];
+        }
       }
 
       return state;
