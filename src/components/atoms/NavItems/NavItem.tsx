@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Icon from "../Icons/Icon";
 import { twMerge } from "tailwind-merge";
 import {

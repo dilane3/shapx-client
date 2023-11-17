@@ -198,10 +198,10 @@ export const drawingSignal = createSignal<DrawingState>({
     createShape: builder
       .use(createShape)
       .onPending((state) => state)
-      .onFulfilled((state, response: any) => {
+      .onFulfilled((state) => {
         return state;
       })
-      .onRejected((state, error) => {
+      .onRejected((state) => {
         return state;
       }),
 
