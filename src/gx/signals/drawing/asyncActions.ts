@@ -57,3 +57,30 @@ export const updateFile = createAsyncAction(
     return null;
   }
 );
+
+
+// Async actions for shapes
+export const createShape = createAsyncAction(
+  async (data: { file_id: number, [key: string]: any }) => {
+    const response = await instance.post("/shapes", data);
+
+    if (response.data) {
+      return true;
+    }
+
+    return null;
+  }
+);
+
+export const updateShape = createAsyncAction(
+  async (data: { file_id: number, id: number, [key: string]: any }) => {
+    const response = await instance.patch(`/shapes/${data.id}`, data);
+
+    if (response.data) {
+      console.log(response.data);
+      return true;
+    }
+
+    return null;
+  }
+);

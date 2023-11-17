@@ -39,6 +39,7 @@ export type DrawingOperations = {
 };
 
 export type DrawingAsyncActions = {
+  // Files
   loadFiles: () => AsyncActionResponse<DrawingState, Array<File>>;
   createFile: (data: {
     id: number;
@@ -47,5 +48,16 @@ export type DrawingAsyncActions = {
   updateFile: (data: {
     id: number;
     name: string;
+  }) => AsyncActionResponse<DrawingState, boolean | null>;
+
+  // Shapes
+  createShape: (data: {
+    file_id: number;
+    [key: string]: any;
+  }) => AsyncActionResponse<DrawingState, boolean | null>;
+  updateShape: (data: {
+    file_id: number;
+    id: number,
+    [key: string]: any;
   }) => AsyncActionResponse<DrawingState, boolean | null>;
 };

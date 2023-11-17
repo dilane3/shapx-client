@@ -50,8 +50,6 @@ export default function TabItem({ file }: Props) {
         setUpdate(false);
       });
     }
-
-    console.log({ update });
   }, [update]);
 
   // Handler

@@ -2,9 +2,15 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { Stage, Layer, Rect } from "react-konva";
 import React from "react";
 import Layout from "./components/layouts/Layout";
-import { useActions, useOperations, useSignal } from "@dilane3/gx";
+import {
+  useActions,
+  useAsyncActions,
+  useOperations,
+  useSignal,
+} from "@dilane3/gx";
 import {
   DrawingActions,
+  DrawingAsyncActions,
   DrawingOperations,
   DrawingState,
 } from "./gx/signals/drawing/types";
@@ -18,7 +24,7 @@ import Rectangle from "./entities/shapes/Rectangle";
 import Hexagon from "./entities/shapes/Hexagon";
 import Ellipse from "./entities/shapes/Ellipse";
 import ShapeFactory from "./entities/factories/ShapeFactory";
-import { generateId } from "./common/utils";
+import { generateId, sleep } from "./common/utils";
 import RectUI from "./components/atoms/Shapes/Rectangle";
 import EllipseUI from "./components/atoms/Shapes/Ellipse";
 import HexagonUI from "./components/atoms/Shapes/Hexagon";
@@ -38,6 +44,7 @@ function App() {
   // Local state
   const [isDrawing, setIsDrawing] = useState(false);
   const [newShapeId, setNewShapeId] = useState<number | null>(null);
+  const [update, setUpdate] = useState(false);
 
   // Global state
   const { currentItem, currentShape } =
@@ -55,6 +62,8 @@ function App() {
   const { setCurrentItem } = useActions<NavigationActions>("navigation");
   const { addShape, updateShape, selectShape, removeUndesirableShapes } =
     useActions<DrawingActions>("drawing");
+  const { createShape: createShapeAsync, updateShape: updateShapeAsync } =
+    useAsyncActions<DrawingAsyncActions>("drawing");
 
   useEffect(() => {
     if (!canvaRef.current) return;
@@ -99,6 +108,31 @@ function App() {
       left: centerX,
     });
   }, []);
+
+  useEffect(() => {
+    const handler = async () => {
+      if (!selectedShape || !file) return;
+
+      const shapeData = selectedShape.properties();
+
+      // update the shape on the database
+      await updateShapeAsync({
+        file_id: file.id,
+        id: shapeData.id,
+        ...shapeData,
+        radius_x: shapeData.radius,
+        radius_y: shapeData.radiusY,
+      });
+    };
+
+    if (update) {
+      handler();
+
+      sleep().then(() => {
+        setUpdate(false);
+      });
+    }
+  }, [update, selectedShape]);
 
   // Handlers
   const handleMouseDown = (event: any) => {
@@ -151,6 +185,7 @@ function App() {
     removeUndesirableShapes();
 
     setIsDrawing(false);
+    setUpdate(true);
   };
 
   const handleDisplayShapes = () => {
@@ -174,7 +209,7 @@ function App() {
     });
   };
 
-  const handleDraw = (position: { x: number; y: number }) => {
+  const handleDraw = async (position: { x: number; y: number }) => {
     if (!file || !currentShape) return;
 
     if (currentItem === NavigationsElement.SHAPE) {
@@ -196,7 +231,19 @@ function App() {
       });
 
       setNewShapeId(shapeId);
+
+      // Add shape to the state
       addShape({ id: file.id, shape });
+
+      const shapeData = shape.properties();
+
+      // Save the shape into the database
+      await createShapeAsync({
+        file_id: file.id,
+        ...shapeData,
+        radius_x: shapeData.radius,
+        radius_y: shapeData.radiusY,
+      });
     }
   };
 
