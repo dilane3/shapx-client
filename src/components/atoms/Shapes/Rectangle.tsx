@@ -108,8 +108,6 @@ export default function RectUI({ shape }: Props) {
   const handleTransformEnd = async (_: Konva.KonvaEventObject<Event>) => {
     if (!file || !shapeRef.current) return;
 
-    console.log("hello")
-
     // Get new scale values
     const node = shapeRef.current;
     const scaleX = node.scaleX();

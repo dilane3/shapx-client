@@ -17,7 +17,6 @@ export default function useLoadFiles() {
     const response = await loadFilesAsync();
 
     if (response.status === AsyncActionStatuses.FULFILLED) {
-      console.log(response.data)
       loadFiles(response.data);
     }
   }

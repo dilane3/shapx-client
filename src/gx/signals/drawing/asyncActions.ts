@@ -37,7 +37,6 @@ export const createFile = createAsyncAction(
     const response = await instance.post("/files", data);
 
     if (response.data) {
-      console.log(response.data);
       return true;
     }
 
@@ -50,7 +49,6 @@ export const updateFile = createAsyncAction(
     const response = await instance.patch(`/files/${data.id}`, { name: data.name });
 
     if (response.data) {
-      console.log(response)
       return true;
     }
 
@@ -76,12 +74,7 @@ export const updateShape = createAsyncAction(
   async (data: { file_id: number, id: number, [key: string]: any }) => {
     const response = await instance.patch(`/shapes/${data.id}`, data);
 
-    console.log({
-      shape: data
-    })
-
     if (response.data) {
-      console.log(response.data);
       return true;
     }
 
@@ -94,7 +87,6 @@ export const deleteShape = createAsyncAction(
     const response = await instance.delete(`/shapes/${id}`);
 
     if (response.data) {
-      console.log(response.data);
       return true;
     }
 

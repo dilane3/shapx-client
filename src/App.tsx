@@ -49,14 +49,18 @@ function App() {
   // Global state
   const { currentItem, currentShape } =
     useSignal<NavigationState>("navigation");
-  const { current: file, selectedShapeId } = useSignal<DrawingState>("drawing");
+  const { current: currentFile, selectedShapeId } = useSignal<DrawingState>("drawing");
 
   // Operations
-  const { getSelectedShape } = useOperations<DrawingOperations>("drawing");
+  const { getSelectedShape, getCurrentFile } = useOperations<DrawingOperations>("drawing");
 
   const selectedShape = useMemo(() => {
     return getSelectedShape();
   }, [selectedShapeId, update]);
+
+  const file = useMemo(() => {
+    return getCurrentFile();
+  }, [currentFile])
 
   // Global actions
   const { setCurrentItem } = useActions<NavigationActions>("navigation");

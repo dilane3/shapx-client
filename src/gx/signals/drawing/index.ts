@@ -40,6 +40,7 @@ export const drawingSignal = createSignal<DrawingState>({
       state.openedFiles.push(file);
       state.files.push(file);
 
+      console.log(file);
       return state;
     },
 
@@ -198,41 +199,29 @@ export const drawingSignal = createSignal<DrawingState>({
       .use(createShape)
       .onPending((state) => state)
       .onFulfilled((state, response: any) => {
-        console.log(response);
-
         return state;
       })
       .onRejected((state, error) => {
-        console.log(error);
-
         return state;
       }),
 
     updateShape: builder
       .use(updateShape)
       .onPending((state) => state)
-      .onFulfilled((state, response: any) => {
-        console.log(response);
-
+      .onFulfilled((state, _: any) => {
         return state;
       })
-      .onRejected((state, error) => {
-        console.log(error);
-
+      .onRejected((state, _) => {
         return state;
       }),
 
     deleteShape: builder
       .use(deleteShape)
       .onPending((state) => state)
-      .onFulfilled((state, response: any) => {
-        console.log(response);
-
+      .onFulfilled((state, _: any) => {
         return state;
       })
-      .onRejected((state, error) => {
-        console.log(error);
-
+      .onRejected((state, _) => {
         return state;
       }),
   }),
