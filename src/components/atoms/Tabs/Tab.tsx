@@ -1,12 +1,14 @@
-import { useActions, useSignal } from "@dilane3/gx";
+import { useActions, useAsyncActions, useSignal } from "@dilane3/gx";
 import File from "../../../entities/file/File";
 import Icon from "../Icons/Icon";
 import { twMerge } from "tailwind-merge";
 import {
   DrawingActions,
+  DrawingAsyncActions,
   DrawingState,
 } from "../../../gx/signals/drawing/types";
 import React, { useEffect, useRef, useState } from "react";
+import { sleep } from "../../../common/utils";
 
 type Props = {
   file: File;
@@ -15,12 +17,15 @@ type Props = {
 export default function TabItem({ file }: Props) {
   // Local state
   const [isRenaming, setIsRenaming] = useState(false);
+  const [update, setUpdate] = useState(false);
 
   // Global state
   const { current: currentFile } = useSignal<DrawingState>("drawing");
 
   // Global actions
-  const { selectFile, removeFile, renameFile } = useActions<DrawingActions>("drawing");
+  const { selectFile, removeFile, renameFile } =
+    useActions<DrawingActions>("drawing");
+  const { updateFile } = useAsyncActions<DrawingAsyncActions>("drawing");
 
   // Effects
   useEffect(() => {
@@ -29,7 +34,25 @@ export default function TabItem({ file }: Props) {
     return () => {
       window.removeEventListener("click", handleClickSomewhere);
     };
-  }, []);
+  }, [isRenaming]);
+
+  useEffect(() => {
+    const handler = async () => {
+      // Rename the file on the database
+      await updateFile({ id: file.id, name: file.name });
+    };
+
+    if (update) {
+      handler();
+      setIsRenaming(false);
+
+      sleep().then(() => {
+        setUpdate(false);
+      });
+    }
+
+    console.log({ update });
+  }, [update]);
 
   // Handler
   const handleSelectFile = () => {
@@ -43,7 +66,9 @@ export default function TabItem({ file }: Props) {
   const handleClickSomewhere = () => {
     if (file.name === "") return;
 
-    setIsRenaming(false);
+    console.log({ isRenaming, update });
+
+    if (isRenaming) setUpdate(true);
   };
 
   const handleDoubleClickToRename = () => {
@@ -51,14 +76,15 @@ export default function TabItem({ file }: Props) {
   };
 
   const handleRenameFile = (e: React.ChangeEvent<HTMLInputElement>) => {
-    renameFile({ id: file.id, name: e.target.value })
-  }
+    renameFile({ id: file.id, name: e.target.value });
+  };
 
   return (
     <div
       className={twMerge(
         "relative max-w-[10rem] h-8 rounded-md rounded-b-none px-4 text-[0.8em] transition-all flex items-center",
-        currentFile?.id === file.id && "bg-tertiary border-b-[1px] border-b-tertiary"
+        currentFile?.id === file.id &&
+          "bg-tertiary border-b-[1px] border-b-tertiary"
       )}
       onClick={handleSelectFile}
       onDoubleClick={handleDoubleClickToRename}

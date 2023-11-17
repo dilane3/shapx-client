@@ -1,4 +1,4 @@
-import { useActions, useSignal } from "@dilane3/gx";
+import { useActions, useAsyncActions, useSignal } from "@dilane3/gx";
 import NavItem from "../atoms/NavItems/NavItem";
 import {
   NavigationState,
@@ -20,7 +20,11 @@ import {
   ExportFilesType,
 } from "../../contexts/export";
 import { generateId, sleep } from "../../common/utils";
-import { DrawingActions, DrawingState } from "../../gx/signals/drawing/types";
+import {
+  DrawingActions,
+  DrawingAsyncActions,
+  DrawingState,
+} from "../../gx/signals/drawing/types";
 import FileEntity from "../../entities/file/File";
 import TabItem from "../atoms/Tabs/Tab";
 
@@ -41,6 +45,8 @@ export default function Navbar() {
 
   // Global actions
   const { selectShape, createFile } = useActions<DrawingActions>("drawing");
+  const { createFile: createFileAsync } =
+    useAsyncActions<DrawingAsyncActions>("drawing");
 
   // Handlers
   const handleGetShapeIcon = () => {
@@ -72,14 +78,18 @@ export default function Navbar() {
     // Read content
     const reader = new FileReader();
 
-    reader.onload = function (e) {
+    reader.onload = async function (e) {
       if (!e.target) return;
 
       const fileContent = e.target.result as string;
 
       const loadedFile = FileEntity.loadShapxData(fileContent);
 
+      // Adding the file into the state
       createFile(loadedFile);
+
+      // Save file into the database
+      await createFileAsync({ id: loadedFile.id, name: loadedFile.name });
     };
 
     // Read the file as text
@@ -107,10 +117,14 @@ export default function Navbar() {
     inputRef.current.click();
   };
 
-  const handleCreateNewFile = () => {
+  const handleCreateNewFile = async () => {
     const file = new FileEntity(generateId(), "Untitled");
 
+    // Adding the file into the state
     createFile(file);
+
+    // Save file into the database
+    await createFileAsync({ id: file.id, name: file.name });
   };
 
   return (

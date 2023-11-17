@@ -2,15 +2,16 @@ import { createSignal } from "@dilane3/gx";
 import { DrawingState } from "./types";
 import File from "../../../entities/file/File";
 import Shape from "../../../entities/abstraction/Shape";
+import { createFile, loadFiles, updateFile } from "./asyncActions";
 
 export const drawingSignal = createSignal<DrawingState>({
   name: "drawing",
   state: {
     files: [],
-    loading: true,
+    loading: false,
     current: null,
     openedFiles: [],
-    selectedShapeId: null
+    selectedShapeId: null,
   },
   actions: {
     loadFiles: (state, files: Array<File>) => {
@@ -30,7 +31,7 @@ export const drawingSignal = createSignal<DrawingState>({
 
     renameFile: (state, payload: { id: number; name: string }) => {
       // Find the file by id
-      const file = state.openedFiles.find(file => file.id === payload.id);
+      const file = state.openedFiles.find((file) => file.id === payload.id);
 
       if (file) {
         file.name = payload.name;
@@ -39,9 +40,11 @@ export const drawingSignal = createSignal<DrawingState>({
       return state;
     },
 
-    removeFile: (state, payload: { id: number }) => { 
+    removeFile: (state, payload: { id: number }) => {
       // Find the file by id
-      const index = state.openedFiles.findIndex(file => file.id === payload.id);
+      const index = state.openedFiles.findIndex(
+        (file) => file.id === payload.id
+      );
 
       if (index !== -1) {
         state.openedFiles.splice(index, 1);
@@ -63,9 +66,9 @@ export const drawingSignal = createSignal<DrawingState>({
       return state;
     },
 
-    addShape: (state, payload: { id: number, shape: Shape }) => {
+    addShape: (state, payload: { id: number; shape: Shape }) => {
       // Find the file by id
-      const file = state.openedFiles.find(file => file.id === payload.id);
+      const file = state.openedFiles.find((file) => file.id === payload.id);
 
       if (file) {
         file.add(payload.shape);
@@ -75,9 +78,9 @@ export const drawingSignal = createSignal<DrawingState>({
       return state;
     },
 
-    removeShape: (state, payload: { id: number, shape: Shape }) => {
+    removeShape: (state, payload: { id: number; shape: Shape }) => {
       // Find the file by id
-      const file = state.openedFiles.find(file => file.id === payload.id);
+      const file = state.openedFiles.find((file) => file.id === payload.id);
 
       if (file) {
         file.remove(payload.shape);
@@ -86,9 +89,9 @@ export const drawingSignal = createSignal<DrawingState>({
       return state;
     },
 
-    updateShape: (state, payload: { id: number, shape: Shape }) => {
+    updateShape: (state, payload: { id: number; shape: Shape }) => {
       // Find the file by id
-      const file = state.openedFiles.find(file => file.id === payload.id);
+      const file = state.openedFiles.find((file) => file.id === payload.id);
 
       if (file) {
         file.updateShape(payload.shape);
@@ -105,21 +108,25 @@ export const drawingSignal = createSignal<DrawingState>({
 
     removeUndesirableShapes: (state) => {
       // Find the file by id
-      const file = state.openedFiles.find(file => file.id === state.current?.id);
+      const file = state.openedFiles.find(
+        (file) => file.id === state.current?.id
+      );
 
       if (file) {
         file.removeUndesirableShapes();
       }
 
       return state;
-    }
+    },
   },
 
   // List of operations
   operations: {
     getSelectedShape: (state) => {
       if (state.selectedShapeId) {
-        const file = state.openedFiles.find(file => file.id === state.current?.id);
+        const file = state.openedFiles.find(
+          (file) => file.id === state.current?.id
+        );
 
         if (file) {
           return file.getShape(state.selectedShapeId);
@@ -131,10 +138,49 @@ export const drawingSignal = createSignal<DrawingState>({
 
     getCurrentFile: (state) => {
       if (state.current) {
-        return state.openedFiles.find(file => file.id === state.current?.id)
+        return state.openedFiles.find((file) => file.id === state.current?.id);
       }
 
       return null;
-    }
-  }
+    },
+  },
+
+  // Async actions
+  asyncActions: (builder) => ({
+    // Files handlers
+    loadFiles: builder
+      .use(loadFiles)
+      .onPending((state) => {
+        state.loading = true;
+
+        return state;
+      })
+      .onFulfilled((state, response: Array<File>) => {
+        state.loading = false;
+        state.files = response;
+
+        return state;
+      })
+      .onRejected((state, _: any) => {
+        state.loading = false;
+
+        return state;
+      }),
+
+    createFile: builder.use(createFile).onPending((state) => state),
+
+    updateFile: builder
+      .use(updateFile)
+      .onPending((state) => state)
+      .onFulfilled((state, response: any) => {
+        console.log(response);
+
+        return state;
+      })
+      .onRejected((state, error) => {
+        console.log(error);
+
+        return state;
+      }),
+  }),
 });

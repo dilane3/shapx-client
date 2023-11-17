@@ -1,5 +1,5 @@
 export const generateId = () => {
-  return Math.floor(Math.random() * 10000000000);
+  return Math.floor(Math.random() * 100000000);
 };
 
 export const sleep = async (ms: number = 1000) =>

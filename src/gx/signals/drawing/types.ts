@@ -1,3 +1,4 @@
+import { AsyncActionResponse } from "@dilane3/gx";
 import Shape from "../../../entities/abstraction/Shape";
 import File from "../../../entities/file/File";
 
@@ -35,4 +36,16 @@ export type DrawingOperations = {
   getSelectedShape: () => Shape | null;
 
   getCurrentFile: () => File | null;
+};
+
+export type DrawingAsyncActions = {
+  loadFiles: () => AsyncActionResponse<DrawingState, Array<File>>;
+  createFile: (data: {
+    id: number;
+    name: string;
+  }) => AsyncActionResponse<DrawingState, boolean | null>;
+  updateFile: (data: {
+    id: number;
+    name: string;
+  }) => AsyncActionResponse<DrawingState, boolean | null>;
 };
