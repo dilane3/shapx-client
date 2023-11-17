@@ -144,6 +144,8 @@ export default function DiamondUI({ shape }: Props) {
     await updateShapeAsync({
       file_id: file.id,
       ...shapeData,
+      x: Math.round(node.x()),
+      y: Math.round(node.y()),
       rotate,
       side
     });

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef } from "react";
 import { RegularPolygon, Transformer } from "react-konva";
 import Konva from "konva";
-import { useActions, useOperations, useSignal } from "@dilane3/gx";
+import { useActions, useAsyncActions, useOperations, useSignal } from "@dilane3/gx";
 import {
   NavigationState,
   NavigationsElement
@@ -10,6 +10,7 @@ import {
   DrawingActions,
   DrawingState,
   DrawingOperations,
+  DrawingAsyncActions,
 } from "../../../gx/signals/drawing/types";
 import ShapeFactory from "../../../entities/factories/ShapeFactory";
 import Hexagon from '../../../entities/shapes/Hexagon';
@@ -29,6 +30,8 @@ export default function HexagonUI({ shape }: Props) {
 
   // Global action
   const { selectShape, updateShape } = useActions<DrawingActions>("drawing");
+  const { updateShape: updateShapeAsync } =
+    useAsyncActions<DrawingAsyncActions>("drawing");
 
   // Global state
   const {
@@ -66,7 +69,7 @@ export default function HexagonUI({ shape }: Props) {
     selectShape(shape.id);
   };
 
-  const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+  const handleDragEnd = async (e: Konva.KonvaEventObject<DragEvent>) => {
     if (!file) return;
 
     // Get new position
@@ -85,9 +88,19 @@ export default function HexagonUI({ shape }: Props) {
 
     // Update shape
     updateShape({ id: file.id, shape: updatedShape });
+
+    const shapeData = shape.properties();
+
+    // update the shape on the database
+    await updateShapeAsync({
+      file_id: file.id,
+      ...shapeData,
+      x,
+      y
+    });
   };
 
-  const handleTransformEnd = (_: Konva.KonvaEventObject<Event>) => {
+  const handleTransformEnd = async (_: Konva.KonvaEventObject<Event>) => {
     if (!file || !shapeRef.current) return;
 
     // Get new scale values
@@ -111,12 +124,24 @@ export default function HexagonUI({ shape }: Props) {
       radius
     });
 
-    // Update shape
-    updateShape({ id: file.id, shape: updatedShape });
-
     // Reset scale
     node.scaleX(1);
     node.scaleY(1);
+
+    // Update shape
+    updateShape({ id: file.id, shape: updatedShape });
+
+    const shapeData = shape.properties();
+
+    // update the shape on the database
+    await updateShapeAsync({
+      file_id: file.id,
+      ...shapeData,
+      x: Math.round(node.x()),
+      y: Math.round(node.y()),
+      rotate,
+      radius_x: radius
+    });
   };
 
   return (
