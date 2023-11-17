@@ -11,6 +11,10 @@ Ce projet represente la partie UI (Cliente) de l'application SHAPX qui vous perm
 - Losange
 - Hexagone
 
+Une version en ligne existe, mais sans serveur et donc sans base de données. Mais il est quand même possible de tester l'application et dessiner des forme géométriques:
+
+URL: [https://shapx.vercel.app/](https://shapx.vercel.app/);
+
 ## Technologies Utilisées
 
 - Typescript: Langage de programmation orientée objet
