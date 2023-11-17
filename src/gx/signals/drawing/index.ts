@@ -28,6 +28,13 @@ export const drawingSignal = createSignal<DrawingState>({
       return state;
     },
 
+    loadFile: (state, file: File) => {
+      state.current = file;
+      state.openedFiles.push(file);
+
+      return state;
+    },
+
     createFile: (state, file: File) => {
       state.current = file;
       state.openedFiles.push(file);

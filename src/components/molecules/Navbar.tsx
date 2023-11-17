@@ -1,6 +1,7 @@
 import { useActions, useAsyncActions, useSignal } from "@dilane3/gx";
 import NavItem from "../atoms/NavItems/NavItem";
 import {
+  NavigationActions,
   NavigationState,
   NavigationsElement,
   ShapeElement,
@@ -47,6 +48,7 @@ export default function Navbar() {
   const { selectShape, createFile } = useActions<DrawingActions>("drawing");
   const { createFile: createFileAsync } =
     useAsyncActions<DrawingAsyncActions>("drawing");
+  const { openFileExplorer } = useActions<NavigationActions>("navigation");
 
   // Handlers
   const handleGetShapeIcon = () => {
@@ -178,7 +180,7 @@ export default function Navbar() {
 
           <MenuItem
             className="text-white font-latoRegular rounded-none px-4"
-            onClick={() => {}}
+            onClick={openFileExplorer}
           >
             <div className="w-full flex flex-row items-center">
               {/* <Icon name="square" size={16} /> */}

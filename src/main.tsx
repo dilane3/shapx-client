@@ -5,11 +5,16 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import GXProvider from "@dilane3/gx";
 import store from "./gx/store";
 import ExportProvider from "./providers/ExportProvider.tsx";
+import FileExplorer from "./components/molecules/FileExplorer.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <GXProvider store={store}>
     <ExportProvider>
-      <App />
+      <>
+        <App />
+      
+        <FileExplorer />
+      </>
     </ExportProvider>
   </GXProvider>
 );

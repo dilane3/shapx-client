@@ -13,6 +13,8 @@ export type DrawingState = {
 export type DrawingActions = {
   loadFiles: (files: Array<File>) => void;
 
+  loadFile: (files: File) => void;
+
   createFile: (file: File) => void;
 
   renameFile: (payload: { id: number; name: string }) => void;

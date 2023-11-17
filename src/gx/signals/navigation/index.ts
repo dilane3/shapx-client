@@ -12,6 +12,7 @@ export const navigationSignal = createSignal<NavigationState>({
   state: {
     currentItem: NavigationsElement.CURSOR,
     currentShape: ShapeElement.RECTANGLE,
+    fileExplorerOpened: true,
   },
   actions: {
     setCurrentItem: (
@@ -27,6 +28,11 @@ export const navigationSignal = createSignal<NavigationState>({
     setCurrentShape: (state, payload) => {
       state.currentShape = payload;
       state.currentItem = NavigationsElement.SHAPE;
+
+      return state;
+    },
+    openFileExplorer: (state) => {
+      state.fileExplorerOpened = !state.fileExplorerOpened;
 
       return state;
     },

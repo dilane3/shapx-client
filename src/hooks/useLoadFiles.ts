@@ -1,10 +1,11 @@
-import { useAsyncActions } from "@dilane3/gx";
-import { DrawingAsyncActions } from "../gx/signals/drawing/types";
+import { AsyncActionStatuses, useActions, useAsyncActions } from "@dilane3/gx";
+import { DrawingActions, DrawingAsyncActions } from "../gx/signals/drawing/types";
 import { useEffect } from "react";
 
 export default function useLoadFiles() {
   // Global actions
-  const { loadFiles } = useAsyncActions<DrawingAsyncActions>("drawing");
+  const { loadFiles: loadFilesAsync } = useAsyncActions<DrawingAsyncActions>("drawing");
+  const { loadFiles } = useActions<DrawingActions>("drawing");
 
   // Effects
   useEffect(() => {
@@ -13,8 +14,11 @@ export default function useLoadFiles() {
 
   // Handlers
   const handleLoadFiles = async () => {
-    const response = await loadFiles();
+    const response = await loadFilesAsync();
 
-    console.log(response);
+    if (response.status === AsyncActionStatuses.FULFILLED) {
+      console.log(response.data)
+      loadFiles(response.data);
+    }
   }
 }

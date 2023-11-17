@@ -19,6 +19,7 @@ export type ShapeElementType = (typeof ShapeElement)[keyof typeof ShapeElement];
 export type NavigationState = {
   currentItem: NavigationsElementType | null;
   currentShape: ShapeElementType | null;
+  fileExplorerOpened: boolean;
 };
 
 export type NavigationActions = {
@@ -27,4 +28,5 @@ export type NavigationActions = {
     shape?: ShapeElementType;
   }) => void;
   setCurrentShape: (payload: ShapeElementType) => void;
+  openFileExplorer: () => void;
 };
