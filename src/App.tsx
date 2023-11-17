@@ -56,7 +56,7 @@ function App() {
 
   const selectedShape = useMemo(() => {
     return getSelectedShape();
-  }, [selectedShapeId]);
+  }, [selectedShapeId, update]);
 
   // Global actions
   const { setCurrentItem } = useActions<NavigationActions>("navigation");
@@ -132,7 +132,7 @@ function App() {
         setUpdate(false);
       });
     }
-  }, [update, selectedShape]);
+  }, [update, JSON.stringify(selectedShape)]);
 
   // Handlers
   const handleMouseDown = (event: any) => {

@@ -1,9 +1,10 @@
-import { useActions, useOperations, useSignal } from "@dilane3/gx";
+import { useActions, useAsyncActions, useOperations, useSignal } from "@dilane3/gx";
 import Shape from "../../../entities/abstraction/Shape";
 import { ShapeElement } from "../../../gx/signals/navigation/types";
 import Icon from "../Icons/Icon";
 import {
   DrawingActions,
+  DrawingAsyncActions,
   DrawingOperations,
   DrawingState,
 } from "../../../gx/signals/drawing/types";
@@ -29,6 +30,9 @@ export default function ShapeItem({ shape }: Props) {
   // Global actions
   const { selectShape, addShape, removeShape } =
     useActions<DrawingActions>("drawing");
+
+  const { createShape: createShapeAsync, deleteShape: deleShapeAsync } =
+  useAsyncActions<DrawingAsyncActions>("drawing");
 
   // Global state
   const {
@@ -75,7 +79,7 @@ export default function ShapeItem({ shape }: Props) {
     setMenuOpened(true);
   };
 
-  const handleDuplicate = () => {
+  const handleDuplicate = async () => {
     if (!file) return;
 
     // Get Factory
@@ -89,15 +93,26 @@ export default function ShapeItem({ shape }: Props) {
     // Add duplicated shape
     addShape({ id: file.id, shape: duplicatedShape });
 
+    const shapeData = duplicatedShape.properties();
+
+    // Save the shape into the database
+    await createShapeAsync({
+      file_id: file.id,
+      ...shapeData
+    });
+
     // close menu
     setMenuOpened(false);
   };
 
-  const handleRemoveShape = () => {
+  const handleRemoveShape = async () => {
     if (!file) return;
 
     // Remove shape
     removeShape({ id: file.id, shape });
+
+    // Remove shape from the database
+    await deleShapeAsync(shape.id);
   };
 
   return (

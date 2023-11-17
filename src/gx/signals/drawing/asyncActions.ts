@@ -76,6 +76,23 @@ export const updateShape = createAsyncAction(
   async (data: { file_id: number, id: number, [key: string]: any }) => {
     const response = await instance.patch(`/shapes/${data.id}`, data);
 
+    console.log({
+      shape: data
+    })
+
+    if (response.data) {
+      console.log(response.data);
+      return true;
+    }
+
+    return null;
+  }
+);
+
+export const deleteShape = createAsyncAction(
+  async (id: number) => {
+    const response = await instance.delete(`/shapes/${id}`);
+
     if (response.data) {
       console.log(response.data);
       return true;

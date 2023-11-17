@@ -2,7 +2,14 @@ import { createSignal } from "@dilane3/gx";
 import { DrawingState } from "./types";
 import File from "../../../entities/file/File";
 import Shape from "../../../entities/abstraction/Shape";
-import { createFile, createShape, loadFiles, updateFile, updateShape } from "./asyncActions";
+import {
+  createFile,
+  createShape,
+  deleteShape,
+  loadFiles,
+  updateFile,
+  updateShape,
+} from "./asyncActions";
 
 export const drawingSignal = createSignal<DrawingState>({
   name: "drawing",
@@ -194,8 +201,22 @@ export const drawingSignal = createSignal<DrawingState>({
         return state;
       }),
 
-      updateShape: builder
+    updateShape: builder
       .use(updateShape)
+      .onPending((state) => state)
+      .onFulfilled((state, response: any) => {
+        console.log(response);
+
+        return state;
+      })
+      .onRejected((state, error) => {
+        console.log(error);
+
+        return state;
+      }),
+
+    deleteShape: builder
+      .use(deleteShape)
       .onPending((state) => state)
       .onFulfilled((state, response: any) => {
         console.log(response);

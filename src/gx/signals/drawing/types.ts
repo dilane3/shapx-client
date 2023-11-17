@@ -60,4 +60,5 @@ export type DrawingAsyncActions = {
     id: number,
     [key: string]: any;
   }) => AsyncActionResponse<DrawingState, boolean | null>;
+  deleteShape: (id: number) => AsyncActionResponse<DrawingState, boolean | null>;
 };

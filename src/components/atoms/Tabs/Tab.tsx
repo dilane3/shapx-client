@@ -64,8 +64,6 @@ export default function TabItem({ file }: Props) {
   const handleClickSomewhere = () => {
     if (file.name === "") return;
 
-    console.log({ isRenaming, update });
-
     if (isRenaming) setUpdate(true);
   };
 
