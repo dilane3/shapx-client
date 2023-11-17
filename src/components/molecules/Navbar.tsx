@@ -139,10 +139,11 @@ export default function Navbar() {
       >
         <MenuHandler>
           <div
-            className="h-full w-auto px-4 flex items-center justify-center hover:bg-tertiary"
+            className="h-full w-auto px-4 pr-8 flex items-center justify-center hover:bg-tertiary"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
+            <img src="/shapx.png" className="h-8 w-8 ml-4 mr-2" />
             <span className="font-latoBlack text-[1.2em]">Shapx</span>
 
             <div className="h-full flex items-center">
